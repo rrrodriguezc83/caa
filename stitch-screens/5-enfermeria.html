@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Enfermería - Historial Médico</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002c5d",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full max-w-md mx-auto flex-col bg-white dark:bg-[#1a110d] shadow-xl overflow-x-hidden">
+<!-- Top Header -->
+<header class="sticky top-0 z-10 flex items-center bg-white/80 dark:bg-[#1a110d]/80 backdrop-blur-md p-4 border-b border-slate-200 dark:border-primary/10 justify-between">
+<div class="flex items-center gap-3">
+<button class="text-slate-700 dark:text-white p-1 hover:bg-slate-100 dark:hover:bg-primary/20 rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">Enfermería</h1>
+</div>
+<div class="flex gap-2">
+<button class="flex size-10 items-center justify-center rounded-full bg-slate-100 dark:bg-primary/10 text-slate-700 dark:text-primary">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</header>
+<!-- Stats Overview -->
+<div class="flex flex-wrap gap-3 p-4">
+<div class="flex min-w-[140px] flex-1 flex-col gap-1 rounded-xl p-4 bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary/20">
+<span class="text-slate-500 dark:text-primary/70 text-xs font-semibold uppercase tracking-wider">Total Visitas</span>
+<p class="text-slate-900 dark:text-white text-2xl font-bold">24</p>
+</div>
+<div class="flex min-w-[140px] flex-1 flex-col gap-1 rounded-xl p-4 bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary/20">
+<span class="text-slate-500 dark:text-primary/70 text-xs font-semibold uppercase tracking-wider">Última Cita</span>
+<p class="text-slate-900 dark:text-white text-lg font-bold">Hoy, 10:30 AM</p>
+</div>
+</div>
+<!-- Section Title -->
+<div class="px-4 py-2 flex items-center justify-between">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold tracking-tight">Historial Médico</h3>
+<span class="text-primary text-sm font-medium">Filtrar por fecha</span>
+</div>
+<!-- Medical Visits List -->
+<div class="flex flex-col p-4 gap-4">
+<!-- Visit Card 1 -->
+<details class="group bg-white dark:bg-[#2a1b14] rounded-xl border border-slate-200 dark:border-primary/10 shadow-sm overflow-hidden" open="">
+<summary class="flex cursor-pointer list-none items-center justify-between p-4 focus:outline-none">
+<div class="flex items-start gap-3">
+<div class="mt-1 flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">medical_services</span>
+</div>
+<div class="flex flex-col">
+<h4 class="text-slate-900 dark:text-white font-bold text-base leading-tight">Golpe en cuello</h4>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    24 Oct 2023
+                                </span>
+<span class="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+                                    10:30 AM
+                                </span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+</summary>
+<div class="px-4 pb-4 pt-0 space-y-4">
+<div class="h-px bg-slate-100 dark:bg-primary/10 w-full"></div>
+<!-- Times Grid -->
+<div class="grid grid-cols-2 gap-3">
+<div class="rounded-lg bg-slate-50 dark:bg-background-dark/50 p-2 border border-slate-100 dark:border-primary/5">
+<p class="text-[10px] uppercase text-slate-500 dark:text-primary/60 font-bold mb-0.5">Entrada</p>
+<p class="text-sm font-semibold dark:text-white">10:25 AM</p>
+</div>
+<div class="rounded-lg bg-slate-50 dark:bg-background-dark/50 p-2 border border-slate-100 dark:border-primary/5">
+<p class="text-[10px] uppercase text-slate-500 dark:text-primary/60 font-bold mb-0.5">Salida</p>
+<p class="text-sm font-semibold dark:text-white">10:45 AM</p>
+</div>
+</div>
+<!-- Procedures -->
+<div>
+<p class="text-[10px] uppercase text-slate-500 dark:text-primary/60 font-bold mb-2">Procedimientos</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">Valuación</span>
+<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">Frío local</span>
+</div>
+</div>
+<!-- Observations -->
+<div>
+<p class="text-[10px] uppercase text-slate-500 dark:text-primary/60 font-bold mb-1">Observaciones</p>
+<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Paciente presenta hematoma leve en zona cervical. Se aplica crioterapia. No hay signos de compromiso neurológico.
+                        </p>
+</div>
+<!-- Professional -->
+<div class="flex items-center justify-between pt-2">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-slate-200 dark:bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-primary">person</span>
+</div>
+<span class="text-xs font-medium text-slate-700 dark:text-slate-200">Enf. Juan Pérez</span>
+</div>
+<span class="text-[10px] text-slate-400 font-mono">ID: 4492</span>
+</div>
+</div>
+</details>
+<!-- Visit Card 2 -->
+<details class="group bg-white dark:bg-[#2a1b14] rounded-xl border border-slate-200 dark:border-primary/10 shadow-sm overflow-hidden">
+<summary class="flex cursor-pointer list-none items-center justify-between p-4 focus:outline-none">
+<div class="flex items-start gap-3">
+<div class="mt-1 flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-primary/5 text-slate-400 dark:text-primary/40">
+<span class="material-symbols-outlined">vital_signs</span>
+</div>
+<div class="flex flex-col">
+<h4 class="text-slate-900 dark:text-white font-bold text-base leading-tight">Control de tensión</h4>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    20 Oct 2023
+                                </span>
+<span class="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+                                    09:15 AM
+                                </span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+</summary>
+<div class="px-4 pb-4 pt-0">
+<div class="h-px bg-slate-100 dark:bg-primary/10 w-full mb-4"></div>
+<p class="text-sm text-slate-600 dark:text-slate-300">Detalles adicionales del procedimiento de control de tensión arterial rutinario.</p>
+</div>
+</details>
+<!-- Visit Card 3 -->
+<details class="group bg-white dark:bg-[#2a1b14] rounded-xl border border-slate-200 dark:border-primary/10 shadow-sm overflow-hidden">
+<summary class="flex cursor-pointer list-none items-center justify-between p-4 focus:outline-none">
+<div class="flex items-start gap-3">
+<div class="mt-1 flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-primary/5 text-slate-400 dark:text-primary/40">
+<span class="material-symbols-outlined">gastroenterology</span>
+</div>
+<div class="flex flex-col">
+<h4 class="text-slate-900 dark:text-white font-bold text-base leading-tight">Dolor abdominal</h4>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    15 Oct 2023
+                                </span>
+<span class="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+                                    04:00 PM
+                                </span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform duration-300">expand_more</span>
+</summary>
+<div class="px-4 pb-4 pt-0">
+<div class="h-px bg-slate-100 dark:bg-primary/10 w-full mb-4"></div>
+<p class="text-sm text-slate-600 dark:text-slate-300">Evaluación por molestias gástricas post-almuerzo.</p>
+</div>
+</details>
+</div>
+<div class="flex-grow"></div>
+<!-- Bottom Navigation -->
+<nav class="sticky bottom-0 border-t border-slate-200 dark:border-primary/20 bg-white dark:bg-[#2a1b14] px-4 pb-6 pt-2">
+<div class="flex gap-2">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-primary/40" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium leading-normal">Inicio</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pulse_alert</span>
+<p class="text-[10px] font-bold leading-normal">Salud</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-primary/40" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<p class="text-[10px] font-medium leading-normal">Mensajes</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-primary/40" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-[10px] font-medium leading-normal">Perfil</p>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

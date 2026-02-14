@@ -5,16 +5,17 @@ import {
   ScrollView,
   StatusBar,
   useWindowDimensions,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
-  Appbar, 
   Text, 
   Card,
   useTheme,
   ActivityIndicator,
-  Divider,
-  Button,
+  Avatar,
+  IconButton,
 } from 'react-native-paper';
 import RenderHtml from 'react-native-render-html';
 import { getInfo } from '../services/authService';
@@ -129,26 +130,90 @@ const DetalleCircularScreen = ({ navigation, route }) => {
   // Función para obtener el mensaje según el valor de auth
   const getAuthMessage = () => {
     if (!auth || auth === '') {
-      return 'Responder la circular en la página Web de la Comunidad Virtual';
+      return 'Pendiente Autorización';
     } else if (auth.toLowerCase() === 'si') {
       return 'Autorizado';
     } else if (auth.toLowerCase() === 'no') {
       return 'No Autorizado';
+    } else if (auth.toLowerCase() === 'na') {
+      return 'No Requiere';
     } else {
-      return 'Responder la circular en la página Web de la Comunidad Virtual';
+      return 'Pendiente Autorización';
     }
   };
 
-  // Función para obtener el estilo del mensaje según el valor de auth
+  // Función para obtener el estilo del card según el valor de auth
+  const getAuthCardStyle = () => {
+    if (!auth || auth === '') {
+      return [styles.responseCard, styles.responseCardPendiente];
+    } else if (auth.toLowerCase() === 'si') {
+      return [styles.responseCard, styles.responseCardAutorizado];
+    } else if (auth.toLowerCase() === 'no') {
+      return [styles.responseCard, styles.responseCardNoAutorizado];
+    } else if (auth.toLowerCase() === 'na') {
+      return [styles.responseCard, styles.responseCardNoRequiere];
+    } else {
+      return [styles.responseCard, styles.responseCardPendiente];
+    }
+  };
+
+  // Función para obtener el estilo del texto según el valor de auth
   const getAuthMessageStyle = () => {
     if (!auth || auth === '') {
-      return styles.responseMessageText;
+      return [styles.responseMessageText, styles.responseMessagePendiente];
     } else if (auth.toLowerCase() === 'si') {
       return [styles.responseMessageText, styles.responseMessageAutorizado];
     } else if (auth.toLowerCase() === 'no') {
       return [styles.responseMessageText, styles.responseMessageNoAutorizado];
+    } else if (auth.toLowerCase() === 'na') {
+      return [styles.responseMessageText, styles.responseMessageNoRequiere];
     } else {
-      return styles.responseMessageText;
+      return [styles.responseMessageText, styles.responseMessagePendiente];
+    }
+  };
+
+  // Función para obtener el ícono según el valor de auth
+  const getAuthIcon = () => {
+    if (!auth || auth === '') {
+      return 'clock-outline';
+    } else if (auth.toLowerCase() === 'si') {
+      return 'check-circle-outline';
+    } else if (auth.toLowerCase() === 'no') {
+      return 'close-circle-outline';
+    } else if (auth.toLowerCase() === 'na') {
+      return 'minus-circle-outline';
+    } else {
+      return 'clock-outline';
+    }
+  };
+
+  // Función para obtener el estilo del ícono según el valor de auth
+  const getAuthIconStyle = () => {
+    if (!auth || auth === '') {
+      return styles.iconContainerPendiente;
+    } else if (auth.toLowerCase() === 'si') {
+      return styles.iconContainerAutorizado;
+    } else if (auth.toLowerCase() === 'no') {
+      return styles.iconContainerNoAutorizado;
+    } else if (auth.toLowerCase() === 'na') {
+      return styles.iconContainerNoRequiere;
+    } else {
+      return styles.iconContainerPendiente;
+    }
+  };
+
+  // Función para obtener el color del ícono según el valor de auth
+  const getAuthIconColor = () => {
+    if (!auth || auth === '') {
+      return '#f59e0b'; // naranja
+    } else if (auth.toLowerCase() === 'si') {
+      return '#10b981'; // verde
+    } else if (auth.toLowerCase() === 'no') {
+      return '#ef4444'; // rojo
+    } else if (auth.toLowerCase() === 'na') {
+      return '#64748b'; // gris
+    } else {
+      return '#f59e0b'; // naranja
     }
   };
 
@@ -191,14 +256,18 @@ const DetalleCircularScreen = ({ navigation, route }) => {
 
   if (!circular) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top', 'left', 'right']}>
-        <StatusBar barStyle="light-content" backgroundColor="#1976D2" />
-        <Appbar.Header elevated style={styles.appBar}>
-          <Appbar.BackAction onPress={() => navigation.goBack()} color="#FFFFFF" />
-          <Appbar.Content title="Detalle Circular" titleStyle={styles.appBarTitle} />
-        </Appbar.Header>
+      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+        <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Avatar.Icon icon="arrow-left" size={40} style={styles.backIcon} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Detalle Circular</Text>
+          <View style={styles.headerPlaceholder} />
+        </View>
         <View style={styles.content}>
-          <Card style={styles.card} elevation={3}>
+          <Card style={styles.errorCard} elevation={1}>
             <Card.Content>
               <Text variant="bodyMedium" style={styles.errorText}>
                 No se encontró información de la circular.
@@ -212,14 +281,18 @@ const DetalleCircularScreen = ({ navigation, route }) => {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top', 'left', 'right']}>
-        <StatusBar barStyle="light-content" backgroundColor="#1976D2" />
-        <Appbar.Header elevated style={styles.appBar}>
-          <Appbar.BackAction onPress={() => navigation.goBack()} color="#FFFFFF" />
-          <Appbar.Content title={`Circular ${circular?.circular || ''}`} titleStyle={styles.appBarTitle} />
-        </Appbar.Header>
+      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+        <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Avatar.Icon icon="arrow-left" size={40} style={styles.backIcon} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Detalles Circular</Text>
+          <View style={styles.headerPlaceholder} />
+        </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <ActivityIndicator size="large" color="#002c5d" />
           <Text style={styles.loadingText}>Cargando contenido de la circular...</Text>
         </View>
       </SafeAreaView>
@@ -228,14 +301,18 @@ const DetalleCircularScreen = ({ navigation, route }) => {
 
   if (!circularContent) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top', 'left', 'right']}>
-        <StatusBar barStyle="light-content" backgroundColor="#1976D2" />
-        <Appbar.Header elevated style={styles.appBar}>
-          <Appbar.BackAction onPress={() => navigation.goBack()} color="#FFFFFF" />
-          <Appbar.Content title="Detalle Circular" titleStyle={styles.appBarTitle} />
-        </Appbar.Header>
+      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+        <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Avatar.Icon icon="arrow-left" size={40} style={styles.backIcon} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Detalles Circular</Text>
+          <View style={styles.headerPlaceholder} />
+        </View>
         <View style={styles.content}>
-          <Card style={styles.card} elevation={3}>
+          <Card style={styles.errorCard} elevation={1}>
             <Card.Content>
               <Text variant="bodyMedium" style={styles.errorText}>
                 No se pudo cargar el contenido de la circular.
@@ -248,77 +325,74 @@ const DetalleCircularScreen = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top', 'left', 'right']}>
-      <StatusBar barStyle="light-content" backgroundColor="#1976D2" />
+    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       
-      {/* App Bar */}
-      <Appbar.Header 
-        elevated 
-        style={styles.appBar}
-        theme={{
-          colors: {
-            onSurface: '#FFFFFF',
-            onSurfaceVariant: '#FFFFFF',
-          }
-        }}
-      >
-        <Appbar.BackAction onPress={() => navigation.goBack()} color="#FFFFFF" />
-        <Appbar.Content title={`Circular ${circularContent.NUM}`} titleStyle={styles.appBarTitle} />
-      </Appbar.Header>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Avatar.Icon icon="arrow-left" size={40} style={styles.backIcon} color="#FFFFFF" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Detalles Circular</Text>
+        <View style={styles.headerPlaceholder} />
+      </View>
 
       {/* Content */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Card style={styles.card} elevation={3}>
-          <Card.Content>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        {/* Main Circular Card */}
+        <Card style={styles.card} elevation={1}>
+          <Card.Content style={styles.cardContent}>
             {/* Título */}
-            <Text variant="headlineSmall" style={styles.title}>
+            <Text style={styles.title}>
               {circularContent.SUBJECT}
             </Text>
 
-            <Divider style={styles.titleDivider} />
-
-            {/* Fechas */}
+            {/* Sección de Fechas con Grid e Iconos */}
             <View style={styles.datesContainer}>
-              <Text style={styles.dateLabel}>
-                Fecha de Apertura: <Text style={styles.dateValue}>{circularContent.DATE_START}</Text>
-              </Text>
-              <Text style={styles.dateLabel}>
-                Fecha de Cierre: <Text style={styles.dateValue}>{circularContent.DATE_END}</Text>
-              </Text>
+              {/* Fecha de Apertura */}
+              <View style={styles.dateColumn}>
+                <Text style={styles.dateLabel}>FECHA APERTURA</Text>
+                <View style={styles.dateRow}>
+                  <Avatar.Icon icon="calendar" size={20} style={styles.dateIconBlue} color="#002c5d" />
+                  <Text style={styles.dateValue}>{circularContent.DATE_START}</Text>
+                </View>
+              </View>
+
+              {/* Fecha de Cierre */}
+              <View style={styles.dateColumn}>
+                <Text style={styles.dateLabel}>FECHA CIERRE</Text>
+                <View style={styles.dateRow}>
+                  <Avatar.Icon icon="calendar-remove" size={20} style={styles.dateIconOrange} color="#ec5b13" />
+                  <Text style={styles.dateValue}>{circularContent.DATE_END}</Text>
+                </View>
+              </View>
             </View>
-
-            <Divider style={styles.divider} />
-
-            {/* Destinatarios */}
-            <Text style={styles.greeting}>
-              Señores{'\n'}
-              Padres de Familia
-            </Text>
 
             {/* Cuerpo del mensaje (HTML) */}
             <View style={styles.bodyContainer}>
               <RenderHtml
                 contentWidth={width - 64}
-                source={{ html: transformTextToHtml(circularContent.BODY) }}
+                source={{ html: '<p>Señores<br><b>Padres de Familia</b></p>' + transformTextToHtml(circularContent.BODY) }}
+                ignoredDomTags={['input']}
                 tagsStyles={{
                   body: { 
-                    color: '#01579B', 
-                    fontSize: 14, 
-                    lineHeight: 22,
+                    color: '#475569', 
+                    fontSize: 16, 
+                    lineHeight: 24,
                     margin: 0,
                     padding: 0,
                   },
                   p: { 
                     margin: 0,
-                    marginBottom: 10,
+                    marginBottom: 12,
                   },
                   strong: { 
                     fontWeight: 'bold', 
-                    color: '#1976D2' 
+                    color: '#002c5d' 
                   },
                   b: { 
                     fontWeight: 'bold', 
-                    color: '#1976D2' 
+                    color: '#002c5d' 
                   },
                   em: { 
                     fontStyle: 'italic' 
@@ -328,42 +402,42 @@ const DetalleCircularScreen = ({ navigation, route }) => {
                   },
                   u: { 
                     textDecorationLine: 'underline',
-                    textDecorationColor: '#01579B',
+                    textDecorationColor: '#475569',
                   },
-                  h1: { color: '#1976D2', fontSize: 18, marginBottom: 8 },
-                  h2: { color: '#1976D2', fontSize: 16, marginBottom: 8 },
-                  h3: { color: '#1976D2', fontSize: 14, marginBottom: 8 },
-                  li: { marginBottom: 8 },
+                  h1: { color: '#002c5d', fontSize: 20, marginBottom: 8, fontWeight: 'bold' },
+                  h2: { color: '#002c5d', fontSize: 18, marginBottom: 8, fontWeight: 'bold' },
+                  h3: { color: '#002c5d', fontSize: 16, marginBottom: 8, fontWeight: 'bold' },
+                  li: { marginBottom: 8, color: '#475569' },
                   table: {
                     borderWidth: 1,
-                    borderColor: '#BBDEFB',
+                    borderColor: '#e2e8f0',
                     borderStyle: 'solid',
                     marginBottom: 12,
                   },
                   th: {
-                    backgroundColor: '#E3F2FD',
+                    backgroundColor: '#f8fafc',
                     borderWidth: 1,
-                    borderColor: '#BBDEFB',
+                    borderColor: '#e2e8f0',
                     borderStyle: 'solid',
                     padding: 8,
                     fontWeight: 'bold',
-                    color: '#1976D2',
+                    color: '#002c5d',
                     textAlign: 'center',
                   },
                   td: {
                     borderWidth: 1,
-                    borderColor: '#BBDEFB',
+                    borderColor: '#e2e8f0',
                     borderStyle: 'solid',
                     padding: 8,
-                    color: '#01579B',
+                    color: '#475569',
                   },
                   tr: {
                     borderWidth: 1,
-                    borderColor: '#BBDEFB',
+                    borderColor: '#e2e8f0',
                     borderStyle: 'solid',
                   },
                   thead: {
-                    backgroundColor: '#E3F2FD',
+                    backgroundColor: '#f8fafc',
                   },
                   tbody: {
                     backgroundColor: '#FFFFFF',
@@ -371,114 +445,91 @@ const DetalleCircularScreen = ({ navigation, route }) => {
                 }}
               />
             </View>
+          </Card.Content>
 
-            {/* Separador */}
-            <Divider style={styles.divider} />
+          {/* Footer interno con fondo gris */}
+          <View style={styles.footerInterno}>
+            <RenderHtml
+              contentWidth={width - 64}
+              source={{ 
+                html: transformTextToHtml(
+                  circularContent.FOOTER 
+                    ? replaceFooterPlaceholders(circularContent.FOOTER)
+                    : `Nosotros los padres del estudiante ${userInfo?.NOMBRE || 'Usuario'} del curso ${userInfo?.CURSO || ''}, estamos enterados de la circular.`
+                )
+              }}
+              ignoredDomTags={['input']}
+              tagsStyles={{
+                body: { 
+                  color: '#475569', 
+                  fontSize: 14, 
+                  lineHeight: 22,
+                  margin: 0,
+                  padding: 0,
+                  fontStyle: 'italic',
+                  textAlign: 'justify',
+                },
+                p: { 
+                  margin: 0,
+                  marginBottom: 0,
+                  textAlign: 'justify',
+                },
+                strong: { 
+                  fontWeight: 'bold', 
+                  color: '#002c5d' 
+                },
+                b: { 
+                  fontWeight: 'bold', 
+                  color: '#002c5d' 
+                },
+                em: { 
+                  fontStyle: 'italic' 
+                },
+                i: { 
+                  fontStyle: 'italic' 
+                },
+                u: { 
+                  textDecorationLine: 'underline',
+                  textDecorationColor: '#475569',
+                },
+              }}
+            />
+          </View>
+        </Card>
 
-            {/* Footer */}
-            {circularContent.FOOTER && (
-              <View style={styles.footerContainer}>
-                <RenderHtml
-                  contentWidth={width - 64}
-                  source={{ html: transformTextToHtml(replaceFooterPlaceholders(circularContent.FOOTER)) }}
-                  tagsStyles={{
-                    body: { 
-                      color: '#01579B', 
-                      fontSize: 14, 
-                      lineHeight: 22,
-                      margin: 0,
-                      padding: 0,
-                    },
-                    p: { 
-                      margin: 0,
-                      marginBottom: 8,
-                    },
-                    b: { 
-                      fontWeight: 'bold', 
-                      color: '#1976D2' 
-                    },
-                    strong: { 
-                      fontWeight: 'bold', 
-                      color: '#1976D2' 
-                    },
-                    em: { 
-                      fontStyle: 'italic' 
-                    },
-                    i: { 
-                      fontStyle: 'italic' 
-                    },
-                    u: { 
-                      textDecorationLine: 'underline',
-                      textDecorationColor: '#01579B',
-                    },
-                    h1: { color: '#1976D2', fontSize: 18, marginBottom: 8 },
-                    h2: { color: '#1976D2', fontSize: 16, marginBottom: 8 },
-                    h3: { color: '#1976D2', fontSize: 14, marginBottom: 8 },
-                    li: { marginBottom: 4 },
-                    table: {
-                      borderWidth: 1,
-                      borderColor: '#BBDEFB',
-                      borderStyle: 'solid',
-                      marginBottom: 12,
-                    },
-                    th: {
-                      backgroundColor: '#E3F2FD',
-                      borderWidth: 1,
-                      borderColor: '#BBDEFB',
-                      borderStyle: 'solid',
-                      padding: 8,
-                      fontWeight: 'bold',
-                      color: '#1976D2',
-                      textAlign: 'center',
-                    },
-                    td: {
-                      borderWidth: 1,
-                      borderColor: '#BBDEFB',
-                      borderStyle: 'solid',
-                      padding: 8,
-                      color: '#01579B',
-                    },
-                    tr: {
-                      borderWidth: 1,
-                      borderColor: '#BBDEFB',
-                      borderStyle: 'solid',
-                    },
-                    thead: {
-                      backgroundColor: '#E3F2FD',
-                    },
-                    tbody: {
-                      backgroundColor: '#FFFFFF',
-                    },
-                  }}
+        {/* Mensaje para circulares con respuesta */}
+        {circularContent.TYPE_NOT === '1' && (
+          <Card style={getAuthCardStyle()} elevation={1}>
+            <Card.Content style={styles.responseCardContent}>
+              <View style={getAuthIconStyle()}>
+                <Avatar.Icon 
+                  icon={getAuthIcon()} 
+                  size={28} 
+                  style={styles.authIcon} 
+                  color={getAuthIconColor()} 
                 />
               </View>
-            )}
-
-            {/* Mensaje para circulares con respuesta */}
-            {circularContent.TYPE_NOT === '1' && (
-              <View style={styles.responseMessageContainer}>
-                <Divider style={styles.divider} />
-                <Text variant="bodyMedium" style={getAuthMessageStyle()}>
+              <View style={styles.textContainer}>
+                <Text style={getAuthMessageStyle()}>
                   {getAuthMessage()}
                 </Text>
               </View>
-            )}
-          </Card.Content>
-          
-          <Divider style={styles.buttonDivider} />
-          
-          <Card.Actions style={styles.cardActions}>
-            <Button 
-              mode="contained" 
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}
-              icon="arrow-left"
-            >
-              Volver
-            </Button>
-          </Card.Actions>
-        </Card>
+            </Card.Content>
+          </Card>
+        )}
       </ScrollView>
+
+      {/* Footer fijo con botón de acción */}
+      <View style={styles.footerFixed}>
+        <TouchableOpacity 
+          style={styles.backButtonFixed}
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.8}
+        >
+          <Avatar.Icon icon="arrow-left" size={24} style={styles.backButtonIcon} color="#FFFFFF" />
+          <Text style={styles.backButtonText}>Volver</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -486,108 +537,265 @@ const DetalleCircularScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f8f6f6',
   },
-  appBar: {
-    backgroundColor: '#1976D2',
+  // Header styles
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#002c5d',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#002c5d',
   },
-  appBarTitle: {
-    color: '#FFFFFF',
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backIcon: {
+    backgroundColor: 'transparent',
+  },
+  headerTitle: {
+    flex: 1,
+    fontSize: 18,
     fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'left',
+    letterSpacing: -0.5,
   },
+  headerPlaceholder: {
+    width: 40,
+  },
+  // Loading state
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f8f6f6',
   },
   loadingText: {
     marginTop: 16,
-    color: '#01579B',
+    color: '#64748b',
+    fontSize: 14,
   },
+  // Content
   content: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f8f6f6',
   },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 100, // Espacio para el footer fijo
+  },
+  // Main card
   card: {
-    marginBottom: 16,
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-  },
-  errorText: {
-    color: '#01579B',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  title: {
-    color: '#1976D2',
-    fontWeight: 'bold',
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
     marginBottom: 16,
-    textAlign: 'center',
+    overflow: 'hidden',
   },
-  titleDivider: {
-    marginBottom: 16,
-    backgroundColor: '#BBDEFB',
+  cardContent: {
+    padding: 20,
   },
-  datesContainer: {
-    marginBottom: 4,
-  },
-  dateLabel: {
-    color: '#1976D2',
-    fontWeight: 'bold',
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  dateValue: {
-    color: '#01579B',
-    fontWeight: 'normal',
-  },
-  divider: {
-    marginTop: 4,
-    marginBottom: 16,
-    backgroundColor: '#BBDEFB',
-  },
-  greeting: {
-    color: '#01579B',
-    fontSize: 14,
-    marginBottom: 20,
-    lineHeight: 22,
-  },
-  bodyContainer: {
-    marginBottom: 10,
-  },
-  footerContainer: {
-    marginTop: 10,
-  },
-  responseMessageContainer: {
+  errorCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
     marginTop: 16,
   },
-  responseMessageText: {
-    color: '#1976D2',
-    fontWeight: 'bold',
+  errorText: {
+    color: '#64748b',
     textAlign: 'center',
+    lineHeight: 24,
     fontSize: 14,
-    fontStyle: 'italic',
-    lineHeight: 22,
+  },
+  // Title
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#002c5d',
+    lineHeight: 32,
+    letterSpacing: -0.5,
+    marginBottom: 16,
+  },
+  // Dates section
+  datesContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#f1f5f9',
+    marginBottom: 16,
+  },
+  dateColumn: {
+    flex: 1,
+    gap: 4,
+  },
+  dateLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#94a3b8',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  dateIconOrange: {
+    backgroundColor: 'transparent',
+    width: 20,
+    height: 20,
+  },
+  dateIconBlue: {
+    backgroundColor: 'transparent',
+    width: 20,
+    height: 20,
+  },
+  dateValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1e293b',
+  },
+  // Body content
+  bodyContainer: {
+    marginBottom: 0,
+  },
+  // Footer interno
+  footerInterno: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: 'rgba(248, 246, 246, 0.5)',
+    borderTopWidth: 1,
+    borderTopColor: '#f1f5f9',
+  },
+  // Response card
+  responseCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    marginBottom: 16,
+  },
+  responseCardAutorizado: {
+    backgroundColor: '#FFFFFF',
+  },
+  responseCardNoAutorizado: {
+    backgroundColor: '#FFFFFF',
+  },
+  responseCardNoRequiere: {
+    backgroundColor: '#FFFFFF',
+  },
+  responseCardPendiente: {
+    backgroundColor: '#FFFFFF',
+  },
+  responseCardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    padding: 16,
+  },
+  // Icon containers
+  iconContainerAutorizado: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#d1fae5', // green-100
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconContainerNoAutorizado: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconContainerNoRequiere: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#e2e8f0', // slate-200
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconContainerPendiente: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#fed7aa', // orange-100
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  authIcon: {
+    backgroundColor: 'transparent',
+  },
+  textContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  responseMessageText: {
+    fontWeight: '700', // font-bold
+    textAlign: 'center',
+    fontSize: 18, // text-lg
+    lineHeight: 24,
+    letterSpacing: -0.45, // tracking-tight (-0.025em en 18px)
+    textTransform: 'uppercase',
   },
   responseMessageAutorizado: {
-    color: '#2E7D32', // Verde para autorizado
+    color: '#10b981', // green-600
   },
   responseMessageNoAutorizado: {
-    color: '#D32F2F', // Rojo para no autorizado
+    color: '#ef4444', // red-600
   },
-  buttonDivider: {
-    marginTop: 20,
-    backgroundColor: '#BBDEFB',
+  responseMessageNoRequiere: {
+    color: '#64748b', // slate-600
   },
-  cardActions: {
-    justifyContent: 'flex-end',
+  responseMessagePendiente: {
+    color: '#f59e0b', // orange-600
+  },
+  // Footer fijo
+  footerFixed: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#e2e8f0',
+    padding: 16,
+  },
+  backButtonFixed: {
+    backgroundColor: '#002c5d',
+    borderRadius: 12,
     paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
-  backButton: {
-    backgroundColor: '#1976D2',
-    minWidth: 150,
+  backButtonIcon: {
+    backgroundColor: 'transparent',
+  },
+  backButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

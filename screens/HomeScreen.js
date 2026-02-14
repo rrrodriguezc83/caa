@@ -31,10 +31,11 @@ import {
 } from 'react-native-paper';
 import RenderHTML from 'react-native-render-html';
 import { getInfo, getMain, clearSession, getInfoStudent, getListWorks, getListReminders } from '../services/authService';
+import TestNotifyData from './TestNotify.json';
 
 const { width } = Dimensions.get('window');
 
-const WelcomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation }) => {
   const theme = useTheme();
   const { width: windowWidth } = useWindowDimensions();
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,8 @@ const WelcomeScreen = ({ navigation }) => {
   const [notifications, setNotifications] = useState([]);
   const [expandedNotifications, setExpandedNotifications] = useState({});
   const [notificationsCardExpanded, setNotificationsCardExpanded] = useState(false);
+  const [circulares, setCirculares] = useState([]);
+  const [pendingNotifys, setPendingNotifys] = useState([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -59,10 +62,29 @@ const WelcomeScreen = ({ navigation }) => {
   // Animación para el drawer
   const slideAnim = useRef(new Animated.Value(-300)).current;
   const overlayOpacity = useRef(new Animated.Value(0)).current;
+  
+  // Animación para el badge ping
+  const badgePingAnim = useRef(new Animated.Value(1)).current;
 
   const showSnackbar = (message) => {
     setSnackbarMessage(message);
     setSnackbarVisible(true);
+  };
+
+  // Función para convertir texto a formato capital (primera letra de cada palabra en mayúscula)
+  const toCapitalCase = (text) => {
+    if (!text) return '';
+    return text
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  // Función para capitalizar solo la primera letra
+  const capitalizeFirst = (text) => {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1);
   };
 
   // Función para transformar texto plano con saltos de línea a HTML
@@ -100,7 +122,8 @@ const WelcomeScreen = ({ navigation }) => {
     
     // Buscar actividades en worksList
     if (worksList && worksList[month] && worksList[month][day]) {
-      const todayWorks = worksList[month][day];
+      let todayWorks = worksList[month][day];
+      todayWorks = todayWorks.concat(worksList[month][day-3]);
       todayWorks.forEach(work => {
         items.push({
           type: 'work',
@@ -223,6 +246,80 @@ const WelcomeScreen = ({ navigation }) => {
     }
   };
 
+  // Función para consumir el servicio de circulares
+  const fetchCirculares = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('base', 'comunidad');
+      formData.append('param', 'getNotices');
+      formData.append('surveys', 'false');
+
+      const response = await fetch(
+        'https://www.comunidadvirtualcaa.co/Notices/controller/cont.php',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+      console.log('Circulares recibidas:', data);
+
+      if (data.code === 200 && data.response) {
+        // Convertir el objeto de respuesta en un array
+        const circularesArray = Object.keys(data.response)
+          .filter(key => key !== 'keys') // Excluir el campo 'keys'
+          .map(key => data.response[key]);
+        
+        setCirculares(circularesArray);
+        console.log('Circulares procesadas:', circularesArray.length);
+        
+        // Test notify - Usar datos de TestNotify.json
+        const testCircularesArray = Object.keys(TestNotifyData.response)
+          .filter(key => key !== 'keys')
+          .map(key => TestNotifyData.response[key]);
+        
+        // Filtrar circulares pendientes según criterios:
+        // - type 2 - state 0
+        // - type 1 - state 0
+        // - type 1 - state 1 - auth vacío
+        //const pendingNotifysArray = circularesArray.filter(circular => {
+        const pendingNotifysArray = testCircularesArray.filter(circular => {
+          const type = circular.type;
+          const state = circular.state;
+          const auth = (circular.auth || '').trim();
+          
+          // type 2 - state 0
+          if (type === '2' && state === '0') {
+            return true;
+          }
+          
+          // type 1 - state 0
+          if (type === '1' && state === '0') {
+            return true;
+          }
+          
+          // type 1 - state 1 - auth vacío
+          if (type === '1' && state === '1' && auth === '') {
+            return true;
+          }
+          
+          return false;
+        });
+
+        setPendingNotifys(pendingNotifysArray);
+        console.log('Circulares pendientes (pendingNotifys):', pendingNotifysArray.length);
+      } else {
+        setCirculares([]);
+        setPendingNotifys([]);
+      }
+    } catch (error) {
+      console.error('Error al cargar circulares:', error);
+      setCirculares([]);
+      setPendingNotifys([]);
+    }
+  };
+
   // Función para alternar el estado expandido de una notificación
   const toggleNotification = (index) => {
     setExpandedNotifications(prev => ({
@@ -305,6 +402,32 @@ const WelcomeScreen = ({ navigation }) => {
   const closeDrawer = () => {
     setDrawerVisible(false);
   };
+
+  // Animación del badge ping
+  useEffect(() => {
+    const pingAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(badgePingAnim, {
+          toValue: 2,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(badgePingAnim, {
+          toValue: 1,
+          duration: 0,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    
+    if (pendingNotifys.length > 0) {
+      pingAnimation.start();
+    }
+    
+    return () => {
+      pingAnimation.stop();
+    };
+  }, [pendingNotifys.length, badgePingAnim]);
 
   // Efecto para animar el drawer
   useEffect(() => {
@@ -405,6 +528,9 @@ const WelcomeScreen = ({ navigation }) => {
 
         // Cargar notificaciones
         await fetchNotifications();
+        
+        // Cargar circulares
+        await fetchCirculares();
 
         // Cargar información del estudiante y agenda virtual
         console.log('Cargando información del estudiante...');
@@ -593,155 +719,128 @@ const WelcomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.mainContainer} edges={['top', 'left', 'right']}>
-      <StatusBar barStyle="light-content" backgroundColor="#1976D2" />
+      <StatusBar barStyle="dark-content" backgroundColor="#f8f6f6" />
       
-      {/* App Bar Material Design */}
-      <Appbar.Header 
-        elevated 
-        style={styles.appBar}
-        theme={{
-          colors: {
-            onSurface: '#FFFFFF',
-            onSurfaceVariant: '#FFFFFF',
-          }
-        }}
-      >
-        <Appbar.Action icon="menu" onPress={openDrawer} color="#FFFFFF" />
-        <Appbar.Content title="Comunidad Virtual" titleStyle={styles.appBarTitle} />
-      </Appbar.Header>
+      {/* Header Section */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={openDrawer} style={styles.headerLeft}>
+          <View style={styles.profileContainer}>
+            {userInfo?.FOTO && getImageUri(userInfo.FOTO) ? (
+              <Image 
+                source={{ uri: getImageUri(userInfo.FOTO) }}
+                style={styles.headerAvatar}
+              />
+            ) : (
+              <View style={styles.headerAvatarPlaceholder}>
+                <Text style={styles.headerAvatarText}>
+                  {userInfo?.NOMBRE ? userInfo.NOMBRE.substring(0, 2).toUpperCase() : 'US'}
+                </Text>
+              </View>
+            )}
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.headerWelcome}>BIENVENIDO</Text>
+              <Text style={styles.headerName}>
+                ¡Hola, {toCapitalCase(userInfo?.NOMBRE?.split(' ')[2] || 'Usuario')}!
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+
+      </View>
 
       {/* Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Card único de Notificaciones */}
-        {notifications.length > 0 && (
-          <Card style={styles.contentCard} elevation={3}>
-            <Card.Title 
-              title="Notificaciones" 
-              titleStyle={styles.cardTitle}
-              left={(props) => (
-                <View style={styles.iconBadgeContainer}>
-                  <Avatar.Icon {...props} icon="bell" size={40} style={styles.cardIcon} />
-                  <Badge style={styles.notificationBadge} size={24}>
-                    {notifications.length}
-                  </Badge>
+        {pendingNotifys.length > 0 && (
+          <Card style={styles.notificationsCard} elevation={1}>
+            {/* Header de Notificaciones */}
+            <View style={styles.notificationsHeader}>
+              <View style={styles.notificationsHeaderLeft}>
+                <View style={styles.notificationIconContainer}>
+                  <Avatar.Icon icon="bell" size={40} style={styles.notificationIcon} color="#002c5d" />
+                  {/* Badge animado */}
+                  <View style={styles.badgeContainer}>
+                    <Animated.View 
+                      style={[
+                        styles.badgePing,
+                        {
+                          transform: [{ scale: badgePingAnim }],
+                          opacity: badgePingAnim.interpolate({
+                            inputRange: [1, 2],
+                            outputRange: [0.75, 0],
+                          }),
+                        }
+                      ]} 
+                    />
+                    <View style={styles.badge}>
+                      <Text style={styles.badgeText}>{pendingNotifys.length}</Text>
+                    </View>
+                  </View>
                 </View>
-              )}
-              right={(props) => (
-                <IconButton
-                  {...props}
-                  icon={notificationsCardExpanded ? "chevron-up" : "chevron-down"}
-                  onPress={() => setNotificationsCardExpanded(!notificationsCardExpanded)}
-                />
-              )}
-            />
-            {notificationsCardExpanded && (
-              <Card.Content>
-                <List.Section>
-                  {notifications.map((notification, index) => {
-                    const isExpanded = expandedNotifications[index] || false;
-                    
-                    // Si el tipo es "Notice" o "Diagnostic", mostrar todo el contenido directamente
-                    if (notification.type === 'Notice' || notification.type === 'Diagnostic') {
-                      // Preparar el texto con prefijo si es Diagnostic
-                      const displayText = notification.type === 'Diagnostic' 
-                        ? `Diagnóstica el día: ${notification.rawNotify || 'Sin contenido disponible'}`
-                        : (notification.rawNotify || 'Sin contenido disponible');
-                      
-                      return (
-                        <View key={`notification-${index}`} style={styles.noticeContainer}>
-                          <View style={styles.noticeHeader}>
-                            <List.Icon icon="information" color="#1976D2" />
-                            <Text variant="bodyMedium" style={styles.noticeText}>
-                              {displayText}
-                            </Text>
-                          </View>
-                        </View>
-                      );
-                    }
-                    
-                    // Para otros tipos, mostrar el acordeón expandible
-                    return (
-                      <List.Accordion
-                        key={`notification-${index}`}
-                        title={notification.tema}
-                        titleStyle={styles.accordionTitle}
-                        titleNumberOfLines={2}
-                        expanded={isExpanded}
-                        onPress={() => toggleNotification(index)}
-                        style={styles.accordion}
-                        left={props => <List.Icon {...props} icon="email" color="#1976D2" />}
-                      >
-                        <View style={styles.notificationDetails}>
-                          <Text variant="bodyMedium" style={styles.notificationLabel}>
-                            Tema:
-                          </Text>
-                          <Text variant="bodyMedium" style={styles.cardText}>
-                            {notification.tema}
-                          </Text>
-                          
-                          <Divider style={styles.notificationDivider} />
-                          
-                          <Text variant="bodyMedium" style={styles.notificationLabel}>
-                            Mensaje:
-                          </Text>
-                          <Text variant="bodyMedium" style={styles.cardText}>
-                            {notification.mensaje}
-                          </Text>
-                          
-                          <Divider style={styles.notificationDivider} />
-                          
-                          <Text variant="bodyMedium" style={styles.notificationLabel}>
-                            Respuesta:
-                          </Text>
-                          <Text variant="bodyMedium" style={styles.cardText}>
-                            {notification.respuesta}
-                          </Text>
-                          
-                          <Divider style={styles.footerDivider} />
-                          
-                          <View style={styles.buttonContainer}>
-                            <Button 
-                              mode="contained" 
-                              icon="check"
-                              onPress={() => handleEnterado(notification, index)}
-                              style={styles.enteradoButton}
-                            >
-                              Enterado
-                            </Button>
-                          </View>
-                        </View>
-                      </List.Accordion>
-                    );
+                <Text style={styles.notificationsTitle}>Notificaciones</Text>
+              </View>
+              <TouchableOpacity onPress={() => navigation.navigate('Circulares')}>
+                <Text style={styles.verTodoButtonText}>Ver todo</Text>
+              </TouchableOpacity>
+            </View>
+            
+            {/* Items de Notificaciones - Circulares Pendientes */}
+            <View style={styles.notificationsItemsContainer}>
+              {pendingNotifys.map((circular, index) => (
+                <TouchableOpacity
+                  key={`circular-${index}-${circular.circular}`}
+                  style={[
+                    styles.notificationItem,
+                    index < pendingNotifys.length - 1 && styles.notificationItemBorder
+                  ]}
+                  onPress={() => navigation.navigate('DetalleCircular', { 
+                    circular,
+                    auth: circular.auth || ''
                   })}
-                </List.Section>
-              </Card.Content>
-            )}
-            {notificationsCardExpanded && (
-              <>
-                <Divider style={styles.cardFooterDivider} />
-                <Card.Actions style={styles.cardFooterActions}>
-                  <Button 
-                    mode="contained" 
-                    onPress={() => navigation.navigate('Circulares')}
-                    style={styles.verTodoButton}
-                    icon="eye"
-                  >
-                    Ver
-                  </Button>
-                </Card.Actions>
-              </>
-            )}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.notificationIconWrapper}>
+                    <Avatar.Icon icon="email" size={24} style={styles.notificationItemIcon} color="rgba(0, 44, 93, 0.6)" />
+                  </View>
+                  <View style={styles.notificationContent}>
+                    <Text style={styles.notificationItemTitle}>
+                      Circular {circular.circular}
+                    </Text>
+                    <Text style={styles.notificationItemDescription} numberOfLines={2}>
+                      {circular.subject}
+                    </Text>
+                    <Text style={styles.notificationItemTimestamp}>
+                      {circular.date_send}
+                    </Text>
+                  </View>
+                  <Avatar.Icon 
+                    icon="chevron-right" 
+                    size={20} 
+                    style={styles.notificationChevron}
+                    color="#94a3b8"
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
           </Card>
         )}
 
-        {/* Card Para mañana... */}
-        <Card style={styles.contentCard} elevation={3}>
-          <Card.Title 
-            title="Para hoy..." 
-            titleStyle={styles.cardTitle}
-            left={(props) => <Avatar.Icon {...props} icon="calendar-clock" size={40} style={styles.cardIcon} />}
-          />
-          <Card.Content>
+        {/* Card Works and Reminders */}
+        <Card style={styles.todayScheduleCard} elevation={1}>
+          <View style={styles.todayScheduleHeader}>
+            <View style={styles.todayScheduleHeaderContent}>
+              <View style={styles.todayScheduleIconContainer}>
+                <Avatar.Icon icon="calendar-today" size={40} style={styles.todayScheduleIcon} color="#002c5d" />
+              </View>
+              <View>
+                <Text style={styles.todayScheduleTitle}>Para hoy...</Text>
+                <Text style={styles.todayScheduleSubtitle}>
+                  {capitalizeFirst(new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }))}
+                </Text>
+              </View>
+            </View>
+          </View>
+          <Card.Content style={styles.todayScheduleContent}>
             {(() => {
               const todayItems = getTodayItems();
               
@@ -758,125 +857,146 @@ const WelcomeScreen = ({ navigation }) => {
               const reminders = todayItems.filter(item => item.type === 'reminder');
               
               return (
-                <View>
+                <View style={styles.timelineContainer}>
+                  {/* Línea vertical del timeline */}
+                  <View style={styles.timelineLine} />
+                  
                   {/* Mostrar trabajos primero */}
                   {works.map((work, index) => {
                     const itemKey = `work-${work.id}-${index}`;
                     const isExpanded = expandedTodayItems[itemKey] || false;
                     
                     return (
-                      <TouchableOpacity 
-                        key={itemKey} 
-                        style={styles.todayItemContainer}
-                        onPress={() => toggleTodayItem(itemKey)}
-                        activeOpacity={0.7}
-                      >
-                        <View style={styles.todayItemHeader}>
-                          <Text variant="titleSmall" style={styles.todayItemSubject}>
-                            {work.subject}
-                          </Text>
-                          <IconButton
-                            icon={isExpanded ? "chevron-up" : "chevron-down"}
-                            size={20}
-                            iconColor="#1976D2"
-                            style={styles.todayItemChevron}
-                          />
+                      <View key={itemKey} style={styles.todayScheduleItem}>
+                        {/* Punto circular del timeline */}
+                        <View style={styles.timelineDotContainer}>
+                          <View style={styles.timelineDot}>
+                            <View style={styles.timelineDotInner} />
+                          </View>
                         </View>
-                        <View style={!isExpanded && styles.todayItemCollapsed}>
-                          <RenderHTML
-                            contentWidth={windowWidth - 64}
-                            source={{ html: transformTextToHtml(work.description) }}
-                            tagsStyles={{
-                              body: {
-                                color: '#01579B',
-                                fontSize: 14,
-                                lineHeight: 22,
-                                margin: 0,
-                                padding: 0,
-                              },
-                              p: {
-                                margin: 0,
-                                marginBottom: 4,
-                              },
-                              h1: { color: '#1976D2', fontSize: 18, marginBottom: 8 },
-                              h2: { color: '#1976D2', fontSize: 16, marginBottom: 8 },
-                              h3: { color: '#1976D2', fontSize: 14, marginBottom: 8 },
-                              li: { marginBottom: 4 },
-                              strong: { fontWeight: 'bold' },
-                              em: { fontStyle: 'italic' },
-                            }}
-                          />
-                          {isExpanded && (
-                            <Text variant="bodySmall" style={styles.todayItemTeacher}>
-                              {work.teacher}
-                            </Text>
-                          )}
-                        </View>
-                        {index < works.length - 1 || reminders.length > 0 ? (
-                          <Divider style={styles.todayItemDivider} />
-                        ) : null}
-                      </TouchableOpacity>
-                    );
-                  })}
-                  
-                  {/* Mostrar recordatorios con título "Otros" */}
-                  {reminders.length > 0 && (
-                    <View>
-                      <TouchableOpacity 
-                        style={styles.todayOtrosHeader}
-                        onPress={() => setOtrosExpanded(!otrosExpanded)}
-                        activeOpacity={0.7}
-                      >
-                        <Text variant="titleMedium" style={styles.todayOtrosTitle}>
-                          Otros
-                        </Text>
-                        <IconButton
-                          icon={otrosExpanded ? "chevron-up" : "chevron-down"}
-                          size={20}
-                          iconColor="#1976D2"
-                          style={styles.todayItemChevron}
-                        />
-                      </TouchableOpacity>
-                      {reminders.map((reminder, index) => {
-                        const itemKey = `reminder-${reminder.id}-${index}`;
                         
-                        return (
-                          <View 
-                            key={itemKey} 
-                            style={styles.todayReminderContainer}
-                          >
-                            <View style={!otrosExpanded && styles.todayItemCollapsed}>
+                        {/* Contenido del item */}
+                        <TouchableOpacity 
+                          style={styles.todayScheduleItemCard}
+                          onPress={() => toggleTodayItem(itemKey)}
+                          activeOpacity={0.7}
+                        >
+                          <View style={styles.todayScheduleItemHeader}>
+                            <View style={styles.todayScheduleItemLeft}>
+                              <Text style={styles.todayScheduleItemTitle}>
+                                {work.subject}
+                              </Text>
+                              <View style={styles.todayScheduleItemLocation}>
+                                <Avatar.Icon icon="account" size={16} style={styles.locationIcon} color="#64748b" />
+                                <Text style={styles.todayScheduleItemTeacher} numberOfLines={1}>
+                                  {work.teacher}
+                                </Text>
+                              </View>
+                            </View>
+                            <IconButton
+                              icon={isExpanded ? "chevron-up" : "chevron-down"}
+                              size={20}
+                              iconColor="#002c5d"
+                              style={styles.todayScheduleItemChevron}
+                            />
+                          </View>
+                          {isExpanded && (
+                            <View style={styles.todayScheduleItemDescription}>
                               <RenderHTML
-                                contentWidth={windowWidth - 64}
-                                source={{ html: transformTextToHtml(reminder.description) }}
+                                contentWidth={windowWidth - 96}
+                                source={{ html: transformTextToHtml(work.description) }}
                                 tagsStyles={{
                                   body: {
-                                    color: '#01579B',
-                                    fontSize: 14,
-                                    lineHeight: 22,
+                                    color: '#64748b',
+                                    fontSize: 12,
+                                    lineHeight: 18,
                                     margin: 0,
                                     padding: 0,
                                   },
                                   p: {
                                     margin: 0,
-                                    marginBottom: 8,
+                                    marginBottom: 4,
                                   },
-                                  h1: { color: '#1976D2', fontSize: 18, marginBottom: 8 },
-                                  h2: { color: '#1976D2', fontSize: 16, marginBottom: 8 },
-                                  h3: { color: '#1976D2', fontSize: 14, marginBottom: 8 },
-                                  li: { marginBottom: 4 },
+                                  h1: { color: '#002c5d', fontSize: 14, marginBottom: 6 },
+                                  h2: { color: '#002c5d', fontSize: 13, marginBottom: 6 },
+                                  h3: { color: '#002c5d', fontSize: 12, marginBottom: 6 },
+                                  li: { marginBottom: 3 },
                                   strong: { fontWeight: 'bold' },
                                   em: { fontStyle: 'italic' },
                                 }}
                               />
                             </View>
-                            {index < reminders.length - 1 ? (
-                              <Divider style={styles.todayItemDivider} />
-                            ) : null}
+                          )}
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  })}
+                  
+                  {/* Mostrar recordatorios */}
+                  {reminders.length > 0 && (
+                    <>
+                      {reminders.map((reminder, index) => {
+                        const itemKey = `reminder-${reminder.id}-${index}`;
+                        const isExpanded = expandedTodayItems[itemKey] || false;
+                        
+                        return (
+                          <View key={itemKey} style={styles.todayScheduleItem}>
+                            {/* Punto circular del timeline para recordatorios */}
+                            <View style={styles.timelineDotContainer}>
+                              <View style={styles.timelineDotReminder}>
+                                <View style={styles.timelineDotInnerReminder} />
+                              </View>
+                            </View>
+                            
+                            {/* Contenido del recordatorio */}
+                            <TouchableOpacity 
+                              style={styles.todayScheduleReminderCard}
+                              onPress={() => toggleTodayItem(itemKey)}
+                              activeOpacity={0.7}
+                            >
+                              <View style={styles.todayScheduleItemHeader}>
+                                <View style={styles.todayScheduleItemLeft}>
+                                  <Text style={styles.todayScheduleReminderTitle}>
+                                    Recordatorio
+                                  </Text>
+                                  <View style={!isExpanded && styles.todayItemCollapsed}>
+                                    <RenderHTML
+                                      contentWidth={windowWidth - 96}
+                                      source={{ html: transformTextToHtml(reminder.description) }}
+                                      tagsStyles={{
+                                        body: {
+                                          color: '#64748b',
+                                          fontSize: 12,
+                                          lineHeight: 18,
+                                          margin: 0,
+                                          padding: 0,
+                                        },
+                                        p: {
+                                          margin: 0,
+                                          marginBottom: 4,
+                                        },
+                                        h1: { color: '#002c5d', fontSize: 14, marginBottom: 6 },
+                                        h2: { color: '#002c5d', fontSize: 13, marginBottom: 6 },
+                                        h3: { color: '#002c5d', fontSize: 12, marginBottom: 6 },
+                                        li: { marginBottom: 3 },
+                                        strong: { fontWeight: 'bold' },
+                                        em: { fontStyle: 'italic' },
+                                      }}
+                                    />
+                                  </View>
+                                </View>
+                                <IconButton
+                                  icon={isExpanded ? "chevron-up" : "chevron-down"}
+                                  size={20}
+                                  iconColor="#64748b"
+                                  style={styles.todayScheduleItemChevron}
+                                />
+                              </View>
+                            </TouchableOpacity>
                           </View>
                         );
                       })}
-                    </View>
+                    </>
                   )}
                 </View>
               );
@@ -955,16 +1075,15 @@ const WelcomeScreen = ({ navigation }) => {
                   label="Home"
                   active={activeDrawerItem === 'home'}
                   onPress={() => handleMenuPress('home', 'Home')}
-                  style={activeDrawerItem === 'home' ? styles.activeDrawerItem : null}
-                  labelStyle={activeDrawerItem === 'home' ? styles.activeDrawerLabel : null}
-                  theme={activeDrawerItem === 'home' ? {
+                  style={activeDrawerItem === 'home' ? styles.activeDrawerItem : styles.inactiveDrawerItem}
+                  labelStyle={activeDrawerItem === 'home' ? styles.activeDrawerLabel : styles.inactiveDrawerLabel}
+                  theme={{
                     colors: {
-                      onSurfaceVariant: '#FFFFFF',
-                      onSecondaryContainer: '#FFFFFF',
-                      onSurface: '#FFFFFF',
-                      text: '#FFFFFF',
-                    }
-                  } : undefined}
+                      onSurfaceVariant: activeDrawerItem === 'home' ? '#002c5d' : '#94a3b8',
+                      onSecondaryContainer: activeDrawerItem === 'home' ? '#002c5d' : '#94a3b8',
+                      primary: '#002c5d',
+                    },
+                  }}
                 />
 
                 {/* Items dinámicos del menú */}
@@ -980,16 +1099,15 @@ const WelcomeScreen = ({ navigation }) => {
                         label={item.module || 'Sin nombre'}
                         active={isActive}
                         onPress={() => handleMenuPress(itemId, item.module)}
-                        style={isActive ? styles.activeDrawerItem : null}
-                        labelStyle={isActive ? styles.activeDrawerLabel : null}
-                        theme={isActive ? {
+                        style={isActive ? styles.activeDrawerItem : styles.inactiveDrawerItem}
+                        labelStyle={isActive ? styles.activeDrawerLabel : styles.inactiveDrawerLabel}
+                        theme={{
                           colors: {
-                            onSurfaceVariant: '#FFFFFF',
-                            onSecondaryContainer: '#FFFFFF',
-                            onSurface: '#FFFFFF',
-                            text: '#FFFFFF',
-                          }
-                        } : undefined}
+                            onSurfaceVariant: isActive ? '#002c5d' : '#94a3b8',
+                            onSecondaryContainer: isActive ? '#002c5d' : '#94a3b8',
+                            primary: '#002c5d',
+                          },
+                        }}
                       />
                     );
                   })
@@ -1005,6 +1123,15 @@ const WelcomeScreen = ({ navigation }) => {
                 icon="logout"
                 label="Cerrar sesión"
                 onPress={handleLogout}
+                style={styles.logoutItem}
+                labelStyle={styles.logoutLabel}
+                theme={{
+                  colors: {
+                    onSurfaceVariant: '#dc2626',
+                    onSecondaryContainer: '#dc2626',
+                    primary: '#dc2626',
+                  },
+                }}
               />
             </View>
           </Animated.View>
@@ -1029,137 +1156,323 @@ const WelcomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF',  // Fondo blanco
+    backgroundColor: '#f8f6f6',
   },
-  appBar: {
-    backgroundColor: '#1976D2',  // Azul principal
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(248, 246, 246, 0.95)',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 44, 93, 0.1)',
   },
-  appBarTitle: {
-    color: '#FFFFFF',  // Texto blanco
+  headerLeft: {
+    flex: 1,
+  },
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  headerAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: 'rgba(0, 44, 93, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  headerAvatarPlaceholder: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#002c5d',
+    borderWidth: 2,
+    borderColor: 'rgba(0, 44, 93, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  headerAvatarText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Inter_700Bold',
     fontWeight: 'bold',
+  },
+  headerTextContainer: {
+    marginLeft: 0,
+  },
+  headerWelcome: {
+    fontSize: 12,
+    fontFamily: 'Inter_700Bold',
+    fontWeight: '700',
+    color: '#002c5d',
+    letterSpacing: 1.5,
+    marginBottom: 4,
+  },
+  headerName: {
+    fontSize: 20,
+    fontFamily: 'Inter_700Bold',
+    fontWeight: 'bold',
+    color: '#221610',
+    lineHeight: 24,
+  },
+  searchButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 44, 93, 0.05)',
+  },
+  searchIcon: {
+    backgroundColor: 'transparent',
+    width: 24,
+    height: 24,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',  // Fondo blanco
+    backgroundColor: '#f8f6f6',
   },
   loadingText: {
     marginTop: 16,
-    color: '#01579B',  // Texto azul oscuro
+    color: '#002c5d',
   },
   content: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#FFFFFF',  // Fondo blanco
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 24,
+    backgroundColor: '#f8f6f6',
   },
   contentCard: {
-    marginBottom: 16,
-    backgroundColor: '#FFFFFF',  // Card blanca
-    borderRadius: 12,
+    marginBottom: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 44, 93, 0.05)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  cardTitle: {
-    color: '#1976D2',  // Título en azul principal
+  // Estilos específicos para el card de notificaciones
+  notificationsCard: {
+    marginBottom: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 44, 93, 0.05)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
+    elevation: 1,
+    overflow: 'hidden',
+  },
+  notificationsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 44, 93, 0.05)',
+  },
+  notificationsHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 12,
+  },
+  notificationIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 44, 93, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  notificationIcon: {
+    backgroundColor: 'transparent',
+    width: 40,
+    height: 40,
+  },
+  badgeContainer: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 16,
+    height: 16,
+  },
+  badgePing: {
+    position: 'absolute',
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: 'rgba(239, 68, 68, 0.75)',
+    opacity: 0.75,
+  },
+  badge: {
+    position: 'relative',
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#ef4444',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontFamily: 'Inter_700Bold',
     fontWeight: 'bold',
   },
+  notificationsTitle: {
+    fontSize: 18,
+    fontFamily: 'Inter_700Bold',
+    fontWeight: 'bold',
+    color: '#221610',
+  },
+  verTodoButtonText: {
+    fontSize: 14,
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600',
+    color: '#002c5d',
+  },
+  notificationsItemsContainer: {
+    backgroundColor: '#FFFFFF',
+  },
+  notificationItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 16,
+    gap: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  notificationItemBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 44, 93, 0.05)',
+  },
+  notificationIconWrapper: {
+    marginTop: 4,
+  },
+  notificationItemIcon: {
+    backgroundColor: 'transparent',
+    width: 20,
+    height: 20,
+  },
+  notificationContent: {
+    flex: 1,
+  },
+  notificationItemTitle: {
+    fontSize: 14,
+    fontFamily: 'Inter_700Bold',
+    fontWeight: 'bold',
+    color: '#221610',
+    marginBottom: 4,
+  },
+  notificationItemDescription: {
+    fontSize: 12,
+    fontFamily: 'Inter_400Regular',
+    color: '#64748b',
+    marginTop: 4,
+    lineHeight: 18,
+  },
+  notificationItemTimestamp: {
+    fontSize: 10,
+    fontFamily: 'Inter_400Regular',
+    color: '#94a3b8',
+    marginTop: 4,
+  },
+  notificationItemText: {
+    fontSize: 14,
+    fontFamily: 'Inter_400Regular',
+    color: '#64748b',
+    lineHeight: 20,
+  },
+  notificationChevron: {
+    backgroundColor: 'transparent',
+    width: 20,
+    height: 20,
+    alignSelf: 'center',
+  },
+  notificationButtonContainer: {
+    alignItems: 'flex-end',
+    marginTop: 12,
+  },
+  notificationEnteradoButton: {
+    backgroundColor: '#002c5d',
+    borderRadius: 6,
+  },
+  cardTitle: {
+    color: '#221610',
+    fontFamily: 'Inter_700Bold',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
   cardIcon: {
-    backgroundColor: '#BBDEFB',  // Fondo azul claro para el ícono
+    backgroundColor: 'rgba(0, 44, 93, 0.1)',
   },
   chevronIcon: {
-    backgroundColor: 'transparent',  // Sin fondo para el chevron
+    backgroundColor: 'transparent',
   },
   iconBadgeContainer: {
     position: 'relative',
   },
   notificationBadge: {
     position: 'absolute',
-    top: -5,
-    right: -5,
-    backgroundColor: '#F44336',
+    top: -8,
+    right: -8,
+    backgroundColor: '#dc2626',
+    minWidth: 24,
+    height: 24,
+    borderRadius: 12,
   },
   cardFooterDivider: {
-    backgroundColor: '#BBDEFB',
-    marginTop: 8,
+    backgroundColor: 'rgba(0, 44, 93, 0.05)',
+    marginTop: 16,
+    height: 1,
   },
   cardFooterActions: {
     justifyContent: 'flex-end',
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   verTodoButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: '#002c5d',
+    borderRadius: 8,
   },
   cardText: {
-    color: '#01579B',  // Texto azul oscuro
+    color: '#64748b',
+    fontFamily: 'Inter_400Regular',
     lineHeight: 22,
+    fontSize: 14,
   },
   cardSubtitle: {
-    color: '#666',
-    fontSize: 14,
-  },
-  notificationLabel: {
-    color: '#1976D2',
-    fontWeight: 'bold',
-    marginTop: 8,
-    marginBottom: 4,
-  },
-  notificationDivider: {
-    marginVertical: 12,
-    backgroundColor: '#BBDEFB',
-  },
-  footerDivider: {
-    marginTop: 16,
-    marginBottom: 8,
-    backgroundColor: '#BBDEFB',
-  },
-  cardActions: {
-    justifyContent: 'flex-end',
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-  },
-  enteradoButton: {
-    backgroundColor: '#1976D2',
-  },
-  accordion: {
-    backgroundColor: '#F5F5F5',
-    marginBottom: 8,
-    borderRadius: 8,
-  },
-  noticeContainer: {
-    backgroundColor: '#E3F2FD',
-    marginBottom: 8,
-    borderRadius: 8,
-    padding: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#1976D2',
-  },
-  noticeHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  noticeText: {
-    flex: 1,
-    color: '#01579B',
-    lineHeight: 22,
-    paddingLeft: 8,
-  },
-  accordionTitle: {
-    fontWeight: 'bold',
-    color: '#01579B',
-    fontSize: 14,
-  },
-  notificationDetails: {
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    marginHorizontal: 8,
-    marginBottom: 8,
-    borderRadius: 8,
-    borderLeftWidth: 3,
-    borderLeftColor: '#1976D2',
-  },
-  buttonContainer: {
-    alignItems: 'flex-end',
-    marginTop: 8,
+    color: '#64748b',
+    fontFamily: 'Inter_400Regular',
+    fontSize: 12,
   },
   // Drawer styles
   modalContainer: {
@@ -1181,7 +1494,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: width * 0.80,
     maxWidth: 320,
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f6f6',
     shadowColor: '#000',
     shadowOffset: {
       width: 2,
@@ -1195,32 +1508,38 @@ const styles = StyleSheet.create({
   profileSection: {
     paddingVertical: 24,
     paddingHorizontal: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f6f6',
   },
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   avatar: {
-    backgroundColor: '#1976D2',
-    borderWidth: 3,
-    borderColor: '#BBDEFB',
+    backgroundColor: '#002c5d',
+    borderWidth: 2,
+    borderColor: 'rgba(0, 44, 93, 0.2)',
   },
   profileInfo: {
     marginLeft: 16,
     flex: 1,
   },
   profileName: {
+    fontFamily: 'Inter_700Bold',
     fontWeight: 'bold',
-    color: '#01579B',
+    color: '#221610',
     marginBottom: 4,
+    fontSize: 16,
   },
   profileRole: {
-    color: '#666',
+    fontFamily: 'Inter_400Regular',
+    color: '#64748b',
     marginBottom: 2,
+    fontSize: 14,
   },
   profileCourse: {
-    color: '#666',
+    fontFamily: 'Inter_400Regular',
+    color: '#64748b',
+    fontSize: 14,
   },
   // Drawer items styles
   menuScrollView: {
@@ -1229,71 +1548,219 @@ const styles = StyleSheet.create({
   drawerSection: {
     paddingTop: 8,
     paddingBottom: 8,
+    paddingHorizontal: 8,
   },
   activeDrawerItem: {
-    backgroundColor: '#1976D2',
-    borderRadius: 24,
-    marginHorizontal: 12,
+    backgroundColor: '#e6ebf1',
+    borderRadius: 12,
+    marginHorizontal: 8,
+    height: 48,
   },
   activeDrawerLabel: {
-    color: '#FFFFFF',
+    color: '#002c5d',
     fontWeight: '600',
+    fontSize: 16,
+  },
+  inactiveDrawerItem: {
+    borderRadius: 12,
+    marginHorizontal: 8,
+    height: 48,
+    backgroundColor: 'transparent',
+  },
+  inactiveDrawerLabel: {
+    color: '#64748b',
+    fontWeight: '500',
+    fontSize: 16,
   },
   logoutSection: {
     paddingVertical: 8,
     paddingBottom: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f6f6',
+    paddingHorizontal: 8,
   },
-  // Estilos para items de hoy
-  todayItemContainer: {
-    marginBottom: 12,
+  logoutItem: {
+    borderRadius: 12,
+    height: 56,
+    backgroundColor: 'transparent',
   },
-  todayItemHeader: {
+  logoutLabel: {
+    color: '#dc2626',
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  // Estilos para "Para hoy..." card
+  todayScheduleCard: {
+    marginBottom: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 44, 93, 0.05)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
+    elevation: 1,
+    overflow: 'hidden',
+  },
+  todayScheduleHeader: {
+    padding: 16,
+  },
+  todayScheduleHeaderContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  todayScheduleIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 44, 93, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  todayScheduleIcon: {
+    backgroundColor: 'transparent',
+    width: 40,
+    height: 40,
+  },
+  todayScheduleTitle: {
+    fontSize: 18,
+    fontFamily: 'Inter_700Bold',
+    fontWeight: 'bold',
+    color: '#221610',
+    marginBottom: 2,
+  },
+  todayScheduleSubtitle: {
+    fontSize: 12,
+    fontFamily: 'Inter_400Regular',
+    color: '#64748b',
+    textTransform: 'capitalize',
+  },
+  todayScheduleContent: {
+    paddingTop: 8,
+  },
+  // Timeline styles
+  timelineContainer: {
+    position: 'relative',
+  },
+  timelineLine: {
+    position: 'absolute',
+    left: 19,
+    top: 8,
+    bottom: 8,
+    width: 2,
+    backgroundColor: 'rgba(0, 44, 93, 0.1)',
+  },
+  todayScheduleItem: {
+    position: 'relative',
+    paddingLeft: 48,
+    marginBottom: 24,
+  },
+  timelineDotContainer: {
+    position: 'absolute',
+    left: 0,
+    top: 4,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timelineDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 44, 93, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timelineDotInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#002c5d',
+  },
+  timelineDotReminder: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: 'rgba(148, 163, 184, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timelineDotInnerReminder: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#94a3b8',
+  },
+  todayScheduleItemCard: {
+    backgroundColor: 'rgba(0, 44, 93, 0.05)',
+    borderRadius: 8,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 44, 93, 0.1)',
+  },
+  todayScheduleReminderCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+  },
+  todayScheduleItemHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
-  todayItemChevron: {
-    margin: 0,
-    marginTop: -8,
-  },
-  todayItemSubject: {
-    color: '#1976D2',
-    fontWeight: 'bold',
-    marginBottom: 4,
+  todayScheduleItemLeft: {
     flex: 1,
+    marginRight: 8,
   },
-  todayItemTeacher: {
-    color: '#666',
-    fontStyle: 'italic',
-    marginTop: 8,
+  todayScheduleItemTitle: {
+    fontSize: 14,
+    fontFamily: 'Inter_700Bold',
+    fontWeight: 'bold',
+    color: '#221610',
+    marginBottom: 6,
   },
-  todayItemDescription: {
-    color: '#01579B',
-    lineHeight: 22,
+  todayScheduleReminderTitle: {
+    fontSize: 14,
+    fontFamily: 'Inter_700Bold',
+    fontWeight: 'bold',
+    color: '#64748b',
+    marginBottom: 6,
   },
-  todayItemCollapsed: {
-    maxHeight: 22,
-    overflow: 'hidden',
-  },
-  todayItemDivider: {
-    backgroundColor: '#BBDEFB',
-    marginTop: 12,
-  },
-  todayOtrosHeader: {
+  todayScheduleItemLocation: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 8,
+    gap: 4,
+    marginTop: 2,
   },
-  todayOtrosTitle: {
-    color: '#1976D2',
-    fontWeight: 'bold',
+  locationIcon: {
+    backgroundColor: 'transparent',
+    width: 16,
+    height: 16,
+  },
+  todayScheduleItemTeacher: {
+    fontSize: 12,
+    fontFamily: 'Inter_400Regular',
+    color: '#64748b',
     flex: 1,
   },
-  todayReminderContainer: {
-    marginBottom: 12,
+  todayScheduleItemChevron: {
+    margin: 0,
+    marginTop: -8,
+    marginRight: -8,
+  },
+  todayScheduleItemDescription: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0, 44, 93, 0.1)',
+  },
+  todayItemCollapsed: {
+    maxHeight: 18,
+    overflow: 'hidden',
   },
 });
 
-export default WelcomeScreen;
+export default HomeScreen;

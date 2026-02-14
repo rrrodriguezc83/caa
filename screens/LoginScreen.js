@@ -5,6 +5,8 @@ import {
   Platform,
   KeyboardAvoidingView,
   ScrollView,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -219,56 +221,135 @@ const LoginScreen = ({ navigation }) => {
         >
           <View style={styles.container}>
             <Card style={styles.card} elevation={4}>
-              <Card.Content>
-                <Text variant="headlineMedium" style={styles.title}>
-                  Iniciar Sesión
+              {/* Header / Logo Section */}
+              <View style={styles.header}>
+                <View style={styles.logoCircle}>
+                  <Image
+                    source={require('../assets/icon.png')}
+                    style={styles.logoImage}
+                    resizeMode="contain"
+                  />
+                </View>
+                <Text variant="headlineMedium" style={styles.welcomeTitle}>
+                  Bienvenido
                 </Text>
+                <Text variant="bodyMedium" style={styles.welcomeSubtitle}>
+                  Ingresa a tu portal educativo
+                </Text>
+              </View>
 
-                <TextInput
-                  label="Usuario"
-                  value={username}
-                  onChangeText={setUsername}
-                  mode="outlined"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  disabled={loading}
-                  style={styles.input}
-                  left={<TextInput.Icon icon="account" />}
-                />
-
-                <TextInput
-                  label="Contraseña"
-                  value={password}
-                  onChangeText={setPassword}
-                  mode="outlined"
-                  secureTextEntry={!showPassword}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  disabled={loading}
-                  style={styles.input}
-                  left={<TextInput.Icon icon="lock" />}
-                  right={
-                    <TextInput.Icon 
-                      icon={showPassword ? 'eye-off' : 'eye'} 
-                      onPress={() => setShowPassword(!showPassword)}
+              <Card.Content style={styles.cardContent}>
+                {/* Profile Selector */}
+                <View style={styles.profileSection}>
+                  <Text variant="labelSmall" style={styles.profileSectionLabel}>
+                    SELECCIONA TU PERFIL
+                  </Text>
+                  <View style={styles.segmentedButtonsContainer}>
+                    <SegmentedButtons
+                      value={selectedProfile}
+                      onValueChange={setSelectedProfile}
+                      buttons={[
+                        { 
+                          value: '1', 
+                          label: 'Comunidad', 
+                          icon: 'account-group',
+                          style: styles.segmentButton,
+                          labelStyle: selectedProfile === '1' ? styles.segmentLabelActive : styles.segmentLabelInactive,
+                        },
+                        { 
+                          value: '2', 
+                          label: 'Estudiante', 
+                          icon: 'book-open-variant',
+                          style: styles.segmentButton,
+                          labelStyle: selectedProfile === '2' ? styles.segmentLabelActive : styles.segmentLabelInactive,
+                        },
+                      ]}
+                      style={styles.segmentedButtons}
+                      theme={{
+                        colors: {
+                          secondaryContainer: '#FFFFFF',
+                          onSecondaryContainer: '#002c5d',
+                          onSurface: 'rgba(34, 22, 16, 0.5)',
+                        }
+                      }}
+                      disabled={loading}
                     />
-                  }
-                />
+                  </View>
+                </View>
 
-                <Text variant="labelLarge" style={styles.profileLabel}>
-                  Perfil
-                </Text>
-                <SegmentedButtons
-                  value={selectedProfile}
-                  onValueChange={setSelectedProfile}
-                  buttons={[
-                    { value: '1', label: 'Comunidad', icon: 'account-group' },
-                    { value: '2', label: 'Estudiante', icon: 'school' },
-                  ]}
-                  style={styles.segmentedButtons}
-                  disabled={loading}
-                />
+                {/* Input Fields */}
+                <View style={styles.inputsContainer}>
+                  <View style={styles.inputWrapper}>
+                    <Text variant="labelMedium" style={styles.inputLabel}>
+                      Usuario
+                    </Text>
+                    <TextInput
+                      value={username}
+                      onChangeText={setUsername}
+                      mode="flat"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      disabled={loading}
+                      style={styles.input}
+                      underlineStyle={styles.inputUnderline}
+                      left={<TextInput.Icon icon="account" iconColor="rgba(34, 22, 16, 0.4)" />}
+                      placeholder="nombre.usuario"
+                      placeholderTextColor="rgba(34, 22, 16, 0.3)"
+                      theme={{
+                        colors: {
+                          primary: '#002c5d',
+                          onSurface: '#221610',
+                          onSurfaceVariant: 'rgba(34, 22, 16, 0.4)',
+                        }
+                      }}
+                    />
+                  </View>
 
+                  <View style={styles.inputWrapper}>
+                    <Text variant="labelMedium" style={styles.inputLabel}>
+                      Contraseña
+                    </Text>
+                    <TextInput
+                      value={password}
+                      onChangeText={setPassword}
+                      mode="flat"
+                      secureTextEntry={!showPassword}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      disabled={loading}
+                      style={styles.input}
+                      underlineStyle={styles.inputUnderline}
+                      left={<TextInput.Icon icon="lock" iconColor="rgba(34, 22, 16, 0.4)" />}
+                      right={
+                        <TextInput.Icon 
+                          icon={showPassword ? 'eye-off' : 'eye'} 
+                          iconColor="rgba(34, 22, 16, 0.4)"
+                          onPress={() => setShowPassword(!showPassword)}
+                        />
+                      }
+                      placeholder="••••••••"
+                      placeholderTextColor="rgba(34, 22, 16, 0.3)"
+                      theme={{
+                        colors: {
+                          primary: '#002c5d',
+                          onSurface: '#221610',
+                          onSurfaceVariant: 'rgba(34, 22, 16, 0.4)',
+                        }
+                      }}
+                    />
+                  </View>
+                </View>
+
+                {/* Forgot password */}
+                <View style={styles.forgotPasswordContainer}>
+                  <TouchableOpacity activeOpacity={0.7}>
+                    <Text variant="bodySmall" style={styles.forgotPasswordText}>
+                      ¿Olvidaste tu contraseña?
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Main Button */}
                 <Button
                   mode="contained"
                   onPress={handleLogin}
@@ -276,33 +357,40 @@ const LoginScreen = ({ navigation }) => {
                   disabled={loading}
                   style={styles.button}
                   contentStyle={styles.buttonContent}
-                  icon="login"
+                  labelStyle={styles.buttonLabel}
+                  buttonColor="#002c5d"
                 >
                   Iniciar Sesión
                 </Button>
 
+                {/* Biometric Section */}
                 {biometricAvailable && hasCredentials && (
-                  <>
+                  <View style={styles.biometricSection}>
                     <View style={styles.dividerContainer}>
-                      <Divider style={styles.divider} />
-                      <Text style={styles.dividerText}>O</Text>
-                      <Divider style={styles.divider} />
+                      <View style={styles.dividerLine} />
+                      <Text style={styles.dividerText}>O ENTRA CON</Text>
+                      <View style={styles.dividerLine} />
                     </View>
 
-                    <View style={styles.biometricContainer}>
-                      <Text variant="bodyMedium" style={styles.biometricLabel}>
-                        Iniciar sesión con huella dactilar
+                    <TouchableOpacity 
+                      style={styles.biometricButton}
+                      onPress={handleBiometricLogin}
+                      disabled={loading}
+                      activeOpacity={0.7}
+                    >
+                      <View style={styles.biometricIconCircle}>
+                        <IconButton
+                          icon="fingerprint"
+                          size={32}
+                          iconColor="#002c5d"
+                          style={styles.biometricIcon}
+                        />
+                      </View>
+                      <Text variant="bodySmall" style={styles.biometricLabel}>
+                        Huella Digital
                       </Text>
-                      <IconButton
-                        icon="fingerprint"
-                        size={48}
-                        iconColor={theme.colors.primary}
-                        style={styles.biometricButton}
-                        onPress={handleBiometricLogin}
-                        disabled={loading}
-                      />
-                    </View>
-                  </>
+                    </TouchableOpacity>
+                  </View>
                 )}
               </Card.Content>
             </Card>
@@ -361,7 +449,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#f8f6f6',
   },
   keyboardView: {
     flex: 1,
@@ -373,54 +461,179 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    padding: 16,
   },
   card: {
     backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 44, 93, 0.1)',
   },
-  title: {
-    marginBottom: 24,
-    textAlign: 'center',
-    fontWeight: 'bold',
+  header: {
+    height: 192,
+    backgroundColor: '#002c5d',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 24,
   },
-  input: {
+  logoCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 16,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 8,
+    overflow: 'hidden',
   },
-  profileLabel: {
-    marginTop: 8,
-    marginBottom: 8,
+  logoImage: {
+    width: 70,
+    height: 70,
+  },
+  welcomeTitle: {
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  welcomeSubtitle: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 14,
+  },
+  cardContent: {
+    paddingTop: 24,
+    paddingBottom: 24,
+  },
+  profileSection: {
+    marginBottom: 24,
+  },
+  profileSectionLabel: {
+    color: 'rgba(34, 22, 16, 0.4)',
+    fontWeight: '700',
+    letterSpacing: 1.2,
+    marginBottom: 12,
+    paddingHorizontal: 4,
+  },
+  segmentedButtonsContainer: {
+    backgroundColor: '#f8f6f6',
+    padding: 4,
+    borderRadius: 16,
   },
   segmentedButtons: {
+    backgroundColor: 'transparent',
+  },
+  segmentButton: {
+    borderRadius: 12,
+    borderWidth: 0,
+  },
+  segmentLabelActive: {
+    fontWeight: '600',
+    fontSize: 14,
+    color: '#002c5d',
+  },
+  segmentLabelInactive: {
+    fontWeight: '600',
+    fontSize: 14,
+    color: 'rgba(34, 22, 16, 0.5)',
+  },
+  inputsContainer: {
+    marginBottom: 16,
+  },
+  inputWrapper: {
+    marginBottom: 16,
+  },
+  inputLabel: {
+    color: '#221610',
+    fontWeight: '500',
+    marginBottom: 6,
+    marginLeft: 4,
+    opacity: 0.8,
+  },
+  input: {
+    backgroundColor: '#f8f6f6',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    paddingHorizontal: 4,
+    height: 56,
+  },
+  inputUnderline: {
+    display: 'none',
+  },
+  forgotPasswordContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     marginBottom: 24,
+    paddingHorizontal: 4,
+  },
+  forgotPasswordText: {
+    color: '#002c5d',
+    fontWeight: '600',
   },
   button: {
     marginTop: 8,
+    borderRadius: 12,
+    shadowColor: '#002c5d',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
   },
   buttonContent: {
-    paddingVertical: 8,
+    paddingVertical: 12,
+  },
+  buttonLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  biometricSection: {
+    paddingTop: 16,
+    alignItems: 'center',
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
+    width: '100%',
+    marginVertical: 16,
   },
-  divider: {
+  dividerLine: {
     flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(34, 22, 16, 0.1)',
   },
   dividerText: {
-    marginHorizontal: 12,
-    color: '#666',
+    marginHorizontal: 16,
+    fontSize: 10,
+    fontWeight: '600',
+    color: 'rgba(34, 22, 16, 0.4)',
+    letterSpacing: 1.5,
   },
-  biometricContainer: {
+  biometricButton: {
     alignItems: 'center',
     marginTop: 8,
   },
-  biometricLabel: {
+  biometricIconCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    borderWidth: 2,
+    borderColor: 'rgba(0, 44, 93, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 8,
-    color: '#666',
   },
-  biometricButton: {
+  biometricIcon: {
     margin: 0,
+  },
+  biometricLabel: {
+    color: 'rgba(34, 22, 16, 0.6)',
+    fontWeight: '500',
   },
   dialog: {
     borderRadius: 16,

@@ -4,24 +4,25 @@ import {
   StyleSheet,
   ScrollView,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { 
-  Appbar, 
   Text, 
-  Card,
   useTheme,
   ActivityIndicator,
-  List,
-  Chip,
+  IconButton,
+  Avatar,
 } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CircularesScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const { notification } = route.params || {};
   const [circulares, setCirculares] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filterTab, setFilterTab] = useState('Todas');
 
   // Recargar circulares cada vez que la pantalla reciba el foco
   useFocusEffect(
@@ -71,121 +72,164 @@ const CircularesScreen = ({ navigation, route }) => {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top', 'left', 'right']}>
-        <StatusBar barStyle="light-content" backgroundColor="#1976D2" />
-        <Appbar.Header elevated style={styles.appBar}>
-          <Appbar.BackAction onPress={() => navigation.goBack()} color="#FFFFFF" />
-          <Appbar.Content title="Circulares" titleStyle={styles.appBarTitle} />
-        </Appbar.Header>
+      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+        <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Avatar.Icon icon="arrow-left" size={40} style={styles.backIcon} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Circulares</Text>
+          <View style={styles.headerPlaceholder} />
+        </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <ActivityIndicator size="large" color="#002c5d" />
           <Text style={styles.loadingText}>Cargando circulares...</Text>
         </View>
       </SafeAreaView>
     );
   }
 
+  // Filtrar circulares según el tab seleccionado
+  const getFilteredCirculares = () => {
+    switch (filterTab) {
+      case 'Vista':
+        return circulares.filter(c => c.state === '1');
+      case 'Pendiente':
+        return circulares.filter(c => c.state !== '1');
+      case 'Autorizado':
+        return circulares.filter(c => c.type === '1' && (c.auth || '').toLowerCase().trim() === 'si');
+      case 'No autorizado':
+        return circulares.filter(c => c.type === '1' && (c.auth || '').toLowerCase().trim() === 'no');
+      default:
+        return circulares;
+    }
+  };
+
+  const filteredCirculares = getFilteredCirculares();
+
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top', 'left', 'right']}>
-      <StatusBar barStyle="light-content" backgroundColor="#1976D2" />
+    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       
-      {/* App Bar */}
-      <Appbar.Header 
-        elevated 
-        style={styles.appBar}
-        theme={{
-          colors: {
-            onSurface: '#FFFFFF',
-            onSurfaceVariant: '#FFFFFF',
-          }
-        }}
-      >
-        <Appbar.BackAction onPress={() => navigation.goBack()} color="#FFFFFF" />
-        <Appbar.Content title="Circulares" titleStyle={styles.appBarTitle} />
-      </Appbar.Header>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Avatar.Icon icon="arrow-left" size={40} style={styles.backIcon} color="#FFFFFF" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Circulares</Text>
+        <View style={styles.headerPlaceholder} />
+      </View>
 
       {/* Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {circulares.length === 0 ? (
-          <Card style={styles.card} elevation={3}>
-            <Card.Content>
-              <Text variant="bodyMedium" style={styles.noCircularesText}>
+        {/* Filter Tabs */}
+        <View style={styles.filterTabsContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={styles.filterTabs}>
+              {['Todas', 'Vista', 'Pendiente', 'Autorizado', 'No autorizado'].map((tab) => (
+                <TouchableOpacity
+                  key={tab}
+                  style={[
+                    styles.filterTab,
+                    filterTab === tab && styles.filterTabActive
+                  ]}
+                  onPress={() => setFilterTab(tab)}
+                >
+                  <Text style={[
+                    styles.filterTabText,
+                    filterTab === tab && styles.filterTabTextActive
+                  ]}>
+                    {tab}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+
+        {/* Circulares Cards */}
+        <View style={styles.cardsContainer}>
+          {filteredCirculares.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Icon name="file-document-outline" size={64} color="#cbd5e1" />
+              <Text style={styles.noCircularesText}>
                 No hay circulares disponibles en este momento.
               </Text>
-            </Card.Content>
-          </Card>
-        ) : (
-          <Card style={styles.card} elevation={3}>
-            <Card.Content style={styles.cardContent}>
-              {circulares.map((circular, index) => (
-                <List.Item
+            </View>
+          ) : (
+            filteredCirculares.map((circular, index) => {
+              const isVista = circular.state === '1';
+              const showAuthChip = circular.type === '1';
+              const authValue = (circular.auth || '').toLowerCase().trim();
+
+              return (
+                <TouchableOpacity
                   key={`circular-${index}-${circular.circular}`}
-                  title={`Circular ${circular.circular}`}
-                  description={circular.subject}
-                  style={styles.listItem}
-                  titleStyle={styles.listItemTitle}
-                  descriptionStyle={styles.listItemDescription}
-                  descriptionNumberOfLines={2}
+                  style={styles.circularCard}
                   onPress={() => navigation.navigate('DetalleCircular', { 
                     circular,
                     auth: circular.auth || ''
                   })}
-                  left={props => <List.Icon {...props} icon="file-document" color="#1976D2" />}
-                  right={props => {
-                    const isVista = circular.state === '1';
-                    const iconColor = isVista ? '#2E7D32' : '#F57F17';
-                    
-                    // Determinar el estado de autorización
-                    const showAuthChip = circular.type === '1';
-                    let authChipStyle, authChipText, authChipTextStyle, authIconColor;
-                    
-                    if (showAuthChip) {
-                      const authValue = (circular.auth || '').toLowerCase().trim();
-                      
-                      if (authValue === 'si') {
-                        authChipStyle = styles.chipAutorizado;
-                        authChipText = 'Autorizado';
-                        authChipTextStyle = styles.chipTextAutorizado;
-                        authIconColor = '#1B5E20';
-                      } else if (authValue === 'no') {
-                        authChipStyle = styles.chipNoAutorizado;
-                        authChipText = 'No autorizado';
-                        authChipTextStyle = styles.chipTextNoAutorizado;
-                        authIconColor = '#B71C1C';
-                      } else {
-                        authChipStyle = styles.chipPendiente;
-                        authChipText = 'Pendiente por autorizar';
-                        authChipTextStyle = styles.chipTextPendiente;
-                        authIconColor = '#E65100';
-                      }
-                    }
-                    
-                    return (
-                      <View style={styles.chipContainer}>
-                        <Chip 
-                          icon={() => <List.Icon icon="check" color={iconColor} size={16} />}
-                          style={[isVista ? styles.chipVista : styles.chipNueva, styles.chipMargin]}
-                          textStyle={isVista ? styles.chipTextVista : styles.chipTextNueva}
-                        >
-                          {isVista ? 'Vista' : 'Nueva'}
-                        </Chip>
-                        {showAuthChip && (
-                          <Chip 
-                            icon={() => <List.Icon icon="shield-check" color={authIconColor} size={16} />}
-                            style={authChipStyle}
-                            textStyle={authChipTextStyle}
-                          >
-                            {authChipText}
-                          </Chip>
-                        )}
+                  activeOpacity={0.7}
+                >
+                  {/* Icon Container */}
+                  <View style={styles.iconContainer}>
+                    <Icon name="file-document" size={28} color="#002c5d" />
+                  </View>
+
+                  {/* Content */}
+                  <View style={styles.cardContent}>
+                    <Text style={styles.circularNumber}>Circular {circular.circular}</Text>
+                    <Text style={styles.circularTitle} numberOfLines={1}>
+                      {circular.subject}
+                    </Text>
+                    <Text style={styles.circularDescription} numberOfLines={1}>
+                      {circular.description || 'Sin descripción'}
+                    </Text>
+                  </View>
+
+                  {/* Badges */}
+                  <View style={styles.badgesContainer}>
+                    {/* Badge de consulta */}
+                    <View style={[
+                      styles.badge,
+                      isVista ? styles.badgeConsultationDone : styles.badgeConsultationPending
+                    ]}>
+                      <Text style={[
+                        styles.badgeText,
+                        isVista ? styles.badgeTextConsultationDone : styles.badgeTextConsultationPending
+                      ]}>
+                        {isVista ? 'CONSULTADA' : 'PENDIENTE'}
+                      </Text>
+                    </View>
+
+                    {/* Badge de autorización */}
+                    {showAuthChip && (
+                      <View style={[
+                        styles.badge,
+                        authValue === 'si' ? styles.badgeAuthYes :
+                        authValue === 'no' ? styles.badgeAuthNo :
+                        styles.badgeAuthNone
+                      ]}>
+                        <Text style={[
+                          styles.badgeText,
+                          authValue === 'si' ? styles.badgeTextAuthYes :
+                          authValue === 'no' ? styles.badgeTextAuthNo :
+                          styles.badgeTextAuthNone
+                        ]}>
+                          {authValue === 'si' ? 'AUTORIZADO' :
+                           authValue === 'no' ? 'NO AUTORIZADO' :
+                           'NO REQUIERE'}
+                        </Text>
                       </View>
-                    );
-                  }}
-                />
-              ))}
-            </Card.Content>
-          </Card>
-        )}
+                    )}
+                  </View>
+                </TouchableOpacity>
+              );
+            })
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -194,112 +238,189 @@ const CircularesScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f8f6f6',
   },
-  appBar: {
-    backgroundColor: '#1976D2',
+  // Header styles
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#002c5d',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#002c5d',
   },
-  appBarTitle: {
-    color: '#FFFFFF',
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backIcon: {
+    backgroundColor: 'transparent',
+  },
+  headerTitle: {
+    flex: 1,
+    fontSize: 18,
     fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'left',
+    letterSpacing: -0.5,
   },
+  headerPlaceholder: {
+    width: 40,
+  },
+  // Loading state
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f8f6f6',
   },
   loadingText: {
     marginTop: 16,
-    color: '#01579B',
+    color: '#64748b',
+    fontSize: 14,
   },
   content: {
     flex: 1,
+    backgroundColor: '#f8f6f6',
+  },
+  filterTabsContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
+  filterTabs: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  filterTab: {
+    backgroundColor: '#e2e8f0',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 999,
+    marginRight: 8,
+  },
+  filterTabActive: {
+    backgroundColor: '#002c5d',
+  },
+  filterTabText: {
+    color: '#64748b',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  filterTabTextActive: {
+    color: '#FFFFFF',
+  },
+  cardsContainer: {
     padding: 16,
-    backgroundColor: '#FFFFFF',
+    gap: 12,
   },
-  card: {
-    marginBottom: 16,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-  },
-  cardContent: {
-    paddingHorizontal: 0,
-    paddingVertical: 0,
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60,
   },
   noCircularesText: {
-    color: '#01579B',
+    color: '#64748b',
     textAlign: 'center',
-    lineHeight: 24,
-  },
-  listItem: {
-    backgroundColor: '#F5F5F5',
-    marginBottom: 8,
-    borderRadius: 8,
-    paddingVertical: 8,
-  },
-  listItemTitle: {
-    fontWeight: 'bold',
-    color: '#1976D2',
     fontSize: 16,
+    marginTop: 16,
   },
-  listItemDescription: {
-    color: '#666',
-    fontSize: 14,
+  circularCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
   },
-  chipContainer: {
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0, 44, 93, 0.1)',
     justifyContent: 'center',
-    alignItems: 'flex-end',
-    paddingRight: 2,
+    alignItems: 'center',
+  },
+  cardContent: {
+    flex: 1,
     gap: 4,
   },
-  chipMargin: {
-    marginBottom: 4,
+  circularNumber: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#002c5d',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
-  chipNueva: {
-    backgroundColor: '#FFF9C4',
-    height: 28,
-    borderRadius: 20,
+  circularTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#0f172a',
   },
-  chipTextNueva: {
-    color: '#F57F17',
-    fontSize: 12,
+  circularDescription: {
+    fontSize: 14,
+    color: '#64748b',
   },
-  chipVista: {
-    backgroundColor: '#E8F5E9',
-    height: 28,
-    borderRadius: 20,
+  badgesContainer: {
+    gap: 4,
+    alignItems: 'flex-end',
   },
-  chipTextVista: {
-    color: '#2E7D32',
-    fontSize: 12,
+  badge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 999,
   },
-  chipAutorizado: {
-    backgroundColor: '#C8E6C9',
-    height: 28,
-    borderRadius: 20,
+  badgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: -0.3,
   },
-  chipTextAutorizado: {
-    color: '#1B5E20',
-    fontSize: 12,
+  // Badge Consultation Done
+  badgeConsultationDone: {
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
   },
-  chipNoAutorizado: {
-    backgroundColor: '#FFCDD2',
-    height: 28,
-    borderRadius: 20,
+  badgeTextConsultationDone: {
+    color: '#10b981',
   },
-  chipTextNoAutorizado: {
-    color: '#B71C1C',
-    fontSize: 12,
+  // Badge Consultation Pending
+  badgeConsultationPending: {
+    backgroundColor: 'rgba(245, 158, 11, 0.1)',
   },
-  chipPendiente: {
-    backgroundColor: '#FFE0B2',
-    height: 28,
-    borderRadius: 20,
+  badgeTextConsultationPending: {
+    color: '#f59e0b',
   },
-  chipTextPendiente: {
-    color: '#E65100',
-    fontSize: 12,
+  // Badge Auth Yes
+  badgeAuthYes: {
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+  },
+  badgeTextAuthYes: {
+    color: '#3b82f6',
+  },
+  // Badge Auth No
+  badgeAuthNo: {
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+  },
+  badgeTextAuthNo: {
+    color: '#ef4444',
+  },
+  // Badge Auth None
+  badgeAuthNone: {
+    backgroundColor: 'rgba(100, 116, 139, 0.1)',
+  },
+  badgeTextAuthNone: {
+    color: '#64748b',
   },
 });
 

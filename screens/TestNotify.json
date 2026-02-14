@@ -1,0 +1,181 @@
+{
+    "code": 200,
+    "response": {
+      "0": {
+        "circular": "39",
+        "DATA_VAL": "39",
+        "subject": "Responsabilidad de la información en los grupos de WhatsApp",
+        "date_send": "13/2/2026",
+        "date_close": "20/2/2026",
+        "state": "0",
+        "first_date": "13/02/2026",
+        "last_date": "13/02/2026",
+        "type": "2",
+        "auth": ""
+      },
+      "1": {
+        "circular": "38",
+        "DATA_VAL": "38",
+        "subject": "Actividad Extracurricular Tenis",
+        "date_send": "12/2/2026",
+        "date_close": "19/2/2026",
+        "state": "1",
+        "first_date": "13/02/2026",
+        "last_date": "13/02/2026",
+        "type": "1",
+        "auth": ""
+      },
+      "2": {
+        "circular": "35",
+        "DATA_VAL": "35",
+        "subject": "Asistencia y excusas",
+        "date_send": "11/2/2026",
+        "date_close": "18/2/2026",
+        "state": "1",
+        "first_date": "12/02/2026",
+        "last_date": "13/02/2026",
+        "type": "2",
+        "auth": ""
+      },
+      "3": {
+        "circular": "32",
+        "DATA_VAL": "32",
+        "subject": "Aclaración Circular No. 29 Servicio Social de Comunidad - inglés",
+        "date_send": "7/2/2026",
+        "date_close": "10/2/2026",
+        "state": "1",
+        "first_date": "08/02/2026",
+        "last_date": "13/02/2026",
+        "type": "2",
+        "auth": ""
+      },
+      "4": {
+        "circular": "29",
+        "DATA_VAL": "29",
+        "subject": "Servicio Social de Comunidad - ingles",
+        "date_send": "6/2/2026",
+        "date_close": "12/2/2026",
+        "state": "0",
+        "first_date": "06/02/2026",
+        "last_date": "13/02/2026",
+        "type": "1",
+        "auth": ""
+      },
+      "5": {
+        "circular": "28",
+        "DATA_VAL": "28",
+        "subject": "Imposición de Ceniza",
+        "date_send": "9/2/2026",
+        "date_close": "14/2/2026",
+        "state": "1",
+        "first_date": "10/02/2026",
+        "last_date": "13/02/2026",
+        "type": "1",
+        "auth": "Si"
+      },
+      "6": {
+        "circular": "24",
+        "DATA_VAL": "24",
+        "subject": "Comunidad Virtual – Perfil Estudiantes",
+        "date_send": "5/2/2026",
+        "date_close": "20/11/2026",
+        "state": "1",
+        "first_date": "05/02/2026",
+        "last_date": "13/02/2026",
+        "type": "3",
+        "auth": ""
+      },
+      "7": {
+        "circular": "22",
+        "DATA_VAL": "22",
+        "subject": "Actividades extracurriculares-sábados",
+        "date_send": "3/2/2026",
+        "date_close": "9/2/2026",
+        "state": "1",
+        "first_date": "03/02/2026",
+        "last_date": "13/02/2026",
+        "type": "2",
+        "auth": ""
+      },
+      "8": {
+        "circular": "15",
+        "DATA_VAL": "15",
+        "subject": "Asamblea 6°, 7° y 8°",
+        "date_send": "27/1/2026",
+        "date_close": "31/1/2026",
+        "state": "1",
+        "first_date": "27/01/2026",
+        "last_date": "13/02/2026",
+        "type": "2",
+        "auth": ""
+      },
+      "9": {
+        "circular": "14",
+        "DATA_VAL": "14",
+        "subject": "Campamento de Verano en Inglaterra 2026 ",
+        "date_send": "27/1/2026",
+        "date_close": "29/1/2026",
+        "state": "1",
+        "first_date": "27/01/2026",
+        "last_date": "13/02/2026",
+        "type": "2",
+        "auth": ""
+      },
+      "10": {
+        "circular": "13",
+        "DATA_VAL": "13",
+        "subject": "Información Loncheras y Uso del comedor",
+        "date_send": "26/1/2026",
+        "date_close": "2/2/2026",
+        "state": "1",
+        "first_date": "26/01/2026",
+        "last_date": "13/02/2026",
+        "type": "2",
+        "auth": ""
+      },
+      "11": {
+        "circular": "11",
+        "DATA_VAL": "11",
+        "subject": "Conferencia a Padres de Familia 5° a 11°",
+        "date_send": "26/1/2026",
+        "date_close": "29/1/2026",
+        "state": "1",
+        "first_date": "26/01/2026",
+        "last_date": "29/01/2026",
+        "type": "2",
+        "auth": ""
+      },
+      "12": {
+        "circular": "9",
+        "DATA_VAL": "9",
+        "subject": "Información pagos de anticipos en pensión y servicios año 2026",
+        "date_send": "24/1/2026",
+        "date_close": "31/1/2026",
+        "state": "1",
+        "first_date": "26/01/2026",
+        "last_date": "13/02/2026",
+        "type": "2",
+        "auth": ""
+      },
+      "13": {
+        "circular": "7",
+        "DATA_VAL": "7",
+        "subject": "Boletín a Padres",
+        "date_send": "23/1/2026",
+        "date_close": "30/1/2026",
+        "state": "1",
+        "first_date": "26/01/2026",
+        "last_date": "13/02/2026",
+        "type": "3",
+        "auth": ""
+      },
+      "keys": [
+        "Circular",
+        "Asunto",
+        "Envío",
+        "Estado",
+        "Última consulta",
+        "Autorización"
+      ]
+    }
+  }
