@@ -1,0 +1,53 @@
+import { MD3LightTheme } from 'react-native-paper';
+
+/**
+ * Tema personalizado Material Design 3 - Tonos Azules con fuente Inter
+ */
+export const theme = {
+  ...MD3LightTheme,
+  fonts: {
+    ...MD3LightTheme.fonts,
+    default: { fontFamily: 'Inter_400Regular' },
+    displayLarge: { ...MD3LightTheme.fonts.displayLarge, fontFamily: 'Inter_700Bold' },
+    displayMedium: { ...MD3LightTheme.fonts.displayMedium, fontFamily: 'Inter_700Bold' },
+    displaySmall: { ...MD3LightTheme.fonts.displaySmall, fontFamily: 'Inter_600SemiBold' },
+    headlineLarge: { ...MD3LightTheme.fonts.headlineLarge, fontFamily: 'Inter_700Bold' },
+    headlineMedium: { ...MD3LightTheme.fonts.headlineMedium, fontFamily: 'Inter_600SemiBold' },
+    headlineSmall: { ...MD3LightTheme.fonts.headlineSmall, fontFamily: 'Inter_600SemiBold' },
+    titleLarge: { ...MD3LightTheme.fonts.titleLarge, fontFamily: 'Inter_600SemiBold' },
+    titleMedium: { ...MD3LightTheme.fonts.titleMedium, fontFamily: 'Inter_600SemiBold' },
+    titleSmall: { ...MD3LightTheme.fonts.titleSmall, fontFamily: 'Inter_500Medium' },
+    bodyLarge: { ...MD3LightTheme.fonts.bodyLarge, fontFamily: 'Inter_400Regular' },
+    bodyMedium: { ...MD3LightTheme.fonts.bodyMedium, fontFamily: 'Inter_400Regular' },
+    bodySmall: { ...MD3LightTheme.fonts.bodySmall, fontFamily: 'Inter_400Regular' },
+    labelLarge: { ...MD3LightTheme.fonts.labelLarge, fontFamily: 'Inter_600SemiBold' },
+    labelMedium: { ...MD3LightTheme.fonts.labelMedium, fontFamily: 'Inter_500Medium' },
+    labelSmall: { ...MD3LightTheme.fonts.labelSmall, fontFamily: 'Inter_500Medium' },
+  },
+  colors: {
+    ...MD3LightTheme.colors,
+    primary: '#1976D2',
+    primaryContainer: '#BBDEFB',
+    secondary: '#0288D1',
+    secondaryContainer: '#B3E5FC',
+    tertiary: '#0097A7',
+    tertiaryContainer: '#B2EBF2',
+    error: '#D32F2F',
+    errorContainer: '#FFCDD2',
+    background: '#E3F2FD',
+    surface: '#FFFFFF',
+    surfaceVariant: '#E1F5FE',
+    outline: '#1976D2',
+    onPrimary: '#FFFFFF',
+    onPrimaryContainer: '#0D47A1',
+    onSecondary: '#FFFFFF',
+    onSecondaryContainer: '#01579B',
+    onTertiary: '#FFFFFF',
+    onTertiaryContainer: '#006064',
+    onBackground: '#0D47A1',
+    onSurface: '#01579B',
+    onSurfaceVariant: '#1565C0',
+    onError: '#FFFFFF',
+    onErrorContainer: '#B71C1C',
+  },
+};
