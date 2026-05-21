@@ -1,73 +1,44 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-} from 'react-native';
+import { View, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  Appbar,
-  Text,
-  Card,
-  useTheme,
-} from 'react-native-paper';
+import { Text } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ScreenHeader from '../../components/common/ScreenHeader';
 
 const ModuleScreen = ({ route, navigation }) => {
-  const theme = useTheme();
   const { moduleName, moduleId } = route.params || {};
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top', 'left', 'right']}>
-      <StatusBar barStyle="light-content" backgroundColor="#1976D2" />
-      <Appbar.Header
-        elevated
-        style={styles.appBar}
-        theme={{ colors: { onSurface: '#FFFFFF', onSurfaceVariant: '#FFFFFF' } }}
-      >
-        <Appbar.BackAction onPress={() => navigation.goBack()} color="#FFFFFF" />
-        <Appbar.Content title={moduleName || 'Módulo'} titleStyle={styles.appBarTitle} />
-      </Appbar.Header>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Card style={styles.contentCard} elevation={3}>
-          <Card.Title title={moduleName || 'Contenido del módulo'} titleStyle={styles.cardTitle} />
-          <Card.Content>
-            <Text variant="bodyLarge" style={styles.cardText}>
-              Bienvenido a {moduleName || 'este módulo'}.
-            </Text>
-            <Text variant="bodyMedium" style={styles.cardSubtext}>
-              El contenido específico de este módulo se cargará aquí.
-            </Text>
-            {moduleId && (
-              <Text variant="bodySmall" style={styles.moduleId}>ID del módulo: {moduleId}</Text>
-            )}
-          </Card.Content>
-        </Card>
-
-        <Card style={styles.contentCard} elevation={3}>
-          <Card.Title title="Información adicional" titleStyle={styles.cardTitle} />
-          <Card.Content>
-            <Text variant="bodyMedium" style={styles.cardText}>
-              Este espacio puede ser utilizado para mostrar información específica del módulo seleccionado.
-            </Text>
-          </Card.Content>
-        </Card>
+    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
+      <ScreenHeader title={moduleName || 'Módulo'} onBack={() => navigation.goBack()} />
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <View style={styles.placeholderContainer}>
+          <View style={styles.iconCircle}>
+            <Icon name="view-module" size={48} color="#002c5d" />
+          </View>
+          <Text style={styles.placeholderTitle}>{moduleName || 'Módulo'}</Text>
+          <Text style={styles.placeholderText}>
+            El contenido de este módulo estará disponible próximamente.
+          </Text>
+          {moduleId && (
+            <Text style={styles.moduleId}>ID: {moduleId}</Text>
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  mainContainer: { flex: 1, backgroundColor: '#FFFFFF' },
-  appBar: { backgroundColor: '#1976D2' },
-  appBarTitle: { color: '#FFFFFF', fontWeight: 'bold' },
-  content: { flex: 1, padding: 16, backgroundColor: '#FFFFFF' },
-  contentCard: { marginBottom: 16, backgroundColor: '#FFFFFF', borderRadius: 12 },
-  cardTitle: { color: '#1976D2', fontWeight: 'bold' },
-  cardText: { color: '#01579B', lineHeight: 22, marginBottom: 12 },
-  cardSubtext: { color: '#666', lineHeight: 20 },
-  moduleId: { color: '#999', marginTop: 12, fontStyle: 'italic' },
+  mainContainer: { flex: 1, backgroundColor: '#f8f6f6' },
+  scrollView: { flex: 1 },
+  scrollContent: { flexGrow: 1, justifyContent: 'center', paddingBottom: 24 },
+  placeholderContainer: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, gap: 12 },
+  iconCircle: { width: 96, height: 96, borderRadius: 48, backgroundColor: 'rgba(0, 44, 93, 0.1)', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  placeholderTitle: { fontSize: 20, fontWeight: 'bold', color: '#0f172a' },
+  placeholderText: { fontSize: 14, color: '#64748b', textAlign: 'center', lineHeight: 22 },
+  moduleId: { fontSize: 12, color: '#94a3b8', fontStyle: 'italic', marginTop: 4 },
 });
 
 export default ModuleScreen;

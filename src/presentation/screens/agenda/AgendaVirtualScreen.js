@@ -20,11 +20,18 @@ import {
   Badge,
   IconButton,
 } from 'react-native-paper';
+import { useRoute } from '@react-navigation/native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import RenderHtml from 'react-native-render-html';
 import { container } from '../../../di/container';
 import { apiClient } from '../../../data/datasources/remote/ApiClient';
 import { API_URLS } from '../../../shared/constants/apiRoutes';
+import {
+  getTodayLocal,
+  isWeekend,
+  getNextBusinessDay,
+  findDaySchool,
+} from '../../../shared/utils/schoolCalendar';
 import ScreenHeader from '../../components/common/ScreenHeader';
 
 const { userRepository, studentRepository } = container;
@@ -130,6 +137,7 @@ LocaleConfig.locales['es'] = {
 LocaleConfig.defaultLocale = 'es';
 
 const AgendaVirtualScreen = ({ navigation }) => {
+  const route = useRoute();
   const theme = useTheme();
   const [selectedDate, setSelectedDate] = useState('');
   const [calendarData, setCalendarData] = useState(null);
@@ -152,7 +160,7 @@ const AgendaVirtualScreen = ({ navigation }) => {
       const remindersForDay = getRemindersForDate(selectedDate);
       setSelectedDayWorks(worksForDay);
       setSelectedDayReminders(remindersForDay);
-      if (calendarData) setSelectedDaySchool(findDaySchool(selectedDate));
+      if (calendarData) setSelectedDaySchool(findDaySchool(calendarData, selectedDate));
       if (checkDaysData) {
         setSwitchValue(isDateChecked(selectedDate));
         const checkDayData = getCheckDayData(selectedDate);
@@ -161,29 +169,10 @@ const AgendaVirtualScreen = ({ navigation }) => {
     }
   }, [selectedDate, worksList, remindersList, calendarData, checkDaysData]);
 
-  const getTodayLocal = () => {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  };
-
-  const isWeekend = (dateString) => {
-    const [year, month, day] = dateString.split('-');
-    const dayOfWeek = new Date(parseInt(year), parseInt(month) - 1, parseInt(day)).getDay();
-    return dayOfWeek === 0 || dayOfWeek === 6;
-  };
-
-  const getNextBusinessDay = (dateString) => {
-    const [year, month, day] = dateString.split('-');
-    let date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-    const dayOfWeek = date.getDay();
-    if (dayOfWeek === 6) date.setDate(date.getDate() + 2);
-    else if (dayOfWeek === 0) date.setDate(date.getDate() + 1);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  };
-
   const today = getTodayLocal();
 
-  const fetchCalendarData = async () => {
+  /** Solo si no viene calendarData desde Home (params). */
+  const fetchCalendarDataFromApi = async () => {
     try {
       const data = await apiClient.post(API_URLS.WORK_CLASS, { base: 'caa', param: 'getCalendar', mod_check: 'false' });
       if (data.code === 200) setCalendarData(data.response);
@@ -205,7 +194,13 @@ const AgendaVirtualScreen = ({ navigation }) => {
     const loadData = async () => {
       setLoading(true);
       try {
-        await Promise.all([fetchCalendarData(), fetchCheckDaysData()]);
+        const passedCalendar = route.params?.calendarData;
+        if (passedCalendar) {
+          setCalendarData(passedCalendar);
+        } else {
+          await fetchCalendarDataFromApi();
+        }
+        await fetchCheckDaysData();
         const infoResponse = await userRepository.getInfo();
         if (infoResponse.code === 200 && infoResponse.response?.[0]) {
           setUserInfo(infoResponse.response[0]);
@@ -229,23 +224,7 @@ const AgendaVirtualScreen = ({ navigation }) => {
       }
     };
     loadData();
-  }, []);
-
-  const findDaySchool = (dateString) => {
-    if (!calendarData) return null;
-    const [, month, day] = dateString.split('-');
-    const monthNum = parseInt(month, 10);
-    const dayNum = parseInt(day, 10);
-    if (calendarData[monthNum]?.data_days) {
-      for (const weekNum in calendarData[monthNum].data_days) {
-        const weekData = calendarData[monthNum].data_days[weekNum];
-        for (const dayKey in weekData) {
-          if (parseInt(weekData[dayKey].day, 10) === dayNum) return weekData[dayKey].day_school;
-        }
-      }
-    }
-    return null;
-  };
+  }, [route.params?.calendarData]);
 
   const isDateChecked = (dateString) => {
     if (!checkDaysData) return false;
@@ -292,7 +271,7 @@ const AgendaVirtualScreen = ({ navigation }) => {
 
   const onDayPress = (day) => {
     setSelectedDate(day.dateString);
-    setSelectedDaySchool(findDaySchool(day.dateString));
+    setSelectedDaySchool(findDaySchool(calendarData, day.dateString));
     setSwitchValue(isDateChecked(day.dateString));
     const checkDayData = getCheckDayData(day.dateString);
     setDateCheck(checkDayData?.date_check || null);

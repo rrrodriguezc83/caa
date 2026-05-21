@@ -18,6 +18,7 @@ import { CircularRepositoryImpl } from '../data/repositories/CircularRepositoryI
 import { NotificationRepositoryImpl } from '../data/repositories/NotificationRepositoryImpl';
 import { NursingRepositoryImpl } from '../data/repositories/NursingRepositoryImpl';
 import { BiometricRepositoryImpl } from '../data/repositories/BiometricRepositoryImpl';
+import { DiagnosticasRepositoryImpl } from '../data/repositories/DiagnosticasRepositoryImpl';
 
 // --- Datasources ---
 const secureStorage = new SecureStorage();
@@ -31,6 +32,7 @@ const circularRepository = new CircularRepositoryImpl(apiClient);
 const notificationRepository = new NotificationRepositoryImpl(apiClient);
 const nursingRepository = new NursingRepositoryImpl(apiClient);
 const biometricRepository = new BiometricRepositoryImpl(biometricAuth, secureStorage);
+const fechasDiagnosticasRepository = new DiagnosticasRepositoryImpl(apiClient);
 
 // --- Container Export ---
 export const container = {
@@ -42,4 +44,5 @@ export const container = {
   notificationRepository,
   nursingRepository,
   biometricRepository,
+  fechasDiagnosticasRepository,
 };

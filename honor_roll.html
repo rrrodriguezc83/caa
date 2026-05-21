@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cuadro de Honor — CAA</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f4ff;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+      color: white;
+      padding: 2.5rem 2rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(13, 71, 161, 0.4);
+    }
+
+    header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    header p {
+      margin-top: 0.4rem;
+      font-size: 1rem;
+      opacity: 0.85;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* ── Best Student ── */
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #1565c0;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(to right, #1565c0 0%, transparent 100%);
+      border-radius: 2px;
+    }
+
+    .best-student-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+
+    .best-card {
+      background: linear-gradient(145deg, #fff 60%, #e8f0fe);
+      border: 2px solid #ffd700;
+      border-radius: 20px;
+      padding: 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      box-shadow: 0 8px 32px rgba(13, 71, 161, 0.18), 0 0 0 4px rgba(255,215,0,0.15);
+      max-width: 520px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .best-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255,215,0,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .best-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1.2rem;
+      background: #ffd700;
+      color: #7a5800;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+    }
+
+    .best-card .photo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ffd700;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+
+    .best-card .photo-placeholder {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: #e3eaf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: #90a4ae;
+      flex-shrink: 0;
+    }
+
+    .best-card .info h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #0d47a1;
+      line-height: 1.2;
+    }
+
+    .best-card .info .id {
+      font-size: 0.8rem;
+      color: #78909c;
+      margin-top: 0.25rem;
+      font-family: monospace;
+    }
+
+    /* ── Honor Roll Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem 1.25rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px rgba(21, 101, 192, 0.18);
+    }
+
+    .card .photo {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid #1565c0;
+      margin-bottom: 0.9rem;
+    }
+
+    .card .photo-placeholder {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #e3eaf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #90a4ae;
+      margin-bottom: 0.9rem;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1a237e;
+      line-height: 1.3;
+    }
+
+    .card .id {
+      font-size: 0.72rem;
+      color: #90a4ae;
+      margin-top: 0.2rem;
+      font-family: monospace;
+    }
+
+    .subjects {
+      margin-top: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      justify-content: center;
+    }
+
+    .tag {
+      background: #e8f0fe;
+      color: #1565c0;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Loading / Error ── */
+    #status {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #546e7a;
+    }
+
+    #status .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid #c5cae9;
+      border-top-color: #1565c0;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    #status .error-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    #status code { background: #eceff1; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 480px) {
+      .best-card { flex-direction: column; text-align: center; padding: 1.75rem 1.5rem; }
+      .best-card .photo, .best-card .photo-placeholder { margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Cuadro de Honor</h1>
+  <p>Comunidad Virtual CAA</p>
+</header>
+
+<main>
+  <div id="status">
+    <div class="spinner"></div>
+    <p>Cargando datos&hellip;</p>
+  </div>
+
+  <div id="best-section" hidden>
+    <p class="section-title">⭐ Mejor Estudiante</p>
+    <div class="best-student-wrapper">
+      <div class="best-card" id="best-card"></div>
+    </div>
+  </div>
+
+  <div id="honor-section" hidden>
+    <p class="section-title">🏅 Cuadro de Honor</p>
+    <div class="grid" id="honor-grid"></div>
+  </div>
+</main>
+
+<script>
+  function photoSrc(b64) {
+    if (!b64) return null;
+    // Detect format from magic bytes
+    const prefix = b64.substring(0, 8);
+    const mime = prefix.startsWith('/9j/') ? 'jpeg'
+               : prefix.startsWith('iVBOR') ? 'png'
+               : prefix.startsWith('R0lGOD') ? 'gif'
+               : 'png';
+    return `data:image/${mime};base64,${b64}`;
+  }
+
+  function photoEl(src, size) {
+    if (src) {
+      const img = document.createElement('img');
+      img.className = 'photo';
+      img.src = src;
+      img.style.width = size + 'px';
+      img.style.height = size + 'px';
+      img.alt = '';
+      return img;
+    }
+    const div = document.createElement('div');
+    div.className = 'photo-placeholder';
+    div.style.width = size + 'px';
+    div.style.height = size + 'px';
+    div.textContent = '👤';
+    return div;
+  }
+
+  function renderBestStudent(student) {
+    const src = photoSrc(student.foto);
+    const card = document.getElementById('best-card');
+
+    const badge = document.createElement('div');
+    badge.className = 'best-badge';
+    badge.textContent = '🏆 Mejor Estudiante';
+
+    const info = document.createElement('div');
+    info.className = 'info';
+    info.innerHTML = `
+      <h2>${student.nombre}<br>${student.apellido}</h2>
+      <div class="id">${student.id_us}</div>
+    `;
+
+    card.appendChild(badge);
+    card.appendChild(photoEl(src, 110));
+    card.appendChild(info);
+
+    document.getElementById('best-section').hidden = false;
+  }
+
+  function renderHonorRoll(entries) {
+    // Group subjects by student id
+    const map = new Map();
+    for (const entry of entries) {
+      if (!map.has(entry.id_us)) {
+        map.set(entry.id_us, { ...entry, subjects: [] });
+      }
+      map.get(entry.id_us).subjects.push(entry.asignatura);
+    }
+
+    const grid = document.getElementById('honor-grid');
+
+    for (const student of map.values()) {
+      const src = photoSrc(student.foto);
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const subjectsHtml = student.subjects
+        .map(s => `<span class="tag">${s}</span>`)
+        .join('');
+
+      card.appendChild(photoEl(src, 90));
+      card.innerHTML += `
+        <h3>${student.nombre} ${student.apellido}</h3>
+        <div class="id">${student.id_us}</div>
+        <div class="subjects">${subjectsHtml}</div>
+      `;
+
+      grid.appendChild(card);
+    }
+
+    document.getElementById('honor-section').hidden = false;
+  }
+
+  fetch('./src/honor_roll.json')
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    })
+    .then(data => {
+      document.getElementById('status').hidden = true;
+      const { bestStudent, honorRoll } = data.response;
+      if (bestStudent?.length) renderBestStudent(bestStudent[0]);
+      if (honorRoll?.length) renderHonorRoll(honorRoll);
+    })
+    .catch(err => {
+      const status = document.getElementById('status');
+      status.innerHTML = `
+        <div class="error-icon">⚠️</div>
+        <p><strong>No se pudo cargar el archivo JSON.</strong></p>
+        <p style="margin-top:0.75rem;font-size:0.9rem">
+          Los navegadores bloquean <code>fetch()</code> en protocolo <code>file://</code>.<br>
+          Sirve el proyecto con un servidor local:
+        </p>
+        <p style="margin-top:0.75rem"><code>npx serve .</code></p>
+        <p style="margin-top:0.4rem;font-size:0.8rem;color:#90a4ae">Error: ${err.message}</p>
+      `;
+    });
+</script>
+</body>
+</html>

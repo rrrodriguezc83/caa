@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fechas Diagnósticas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002c5d",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav { color: #002c5d; }
+        .timeline-line {
+            width: 2px;
+            background: linear-gradient(to bottom, #002c5d 0%, #002c5d 50%, rgba(0, 44, 93, 0.1) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header Navigation -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-white/10">
+<div class="flex items-center justify-between p-4 max-w-md mx-auto">
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
+<span class="material-symbols-outlined block">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Fechas Diagnósticas</h1>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors">
+<span class="material-symbols-outlined block">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 max-w-md mx-auto w-full pb-24">
+<!-- Search & Filter (Contextual) -->
+<div class="px-4 py-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all" placeholder="Buscar asignatura..." type="text"/>
+</div>
+</div>
+<!-- Month Section: February -->
+<section class="mb-8">
+<div class="px-6 py-2 sticky top-[64px] bg-background-light dark:bg-background-dark z-40">
+<h2 class="text-xs font-bold uppercase tracking-widest text-primary">Febrero 2026</h2>
+</div>
+<div class="px-4 mt-2 space-y-0 relative">
+<!-- Timeline Vertical Line -->
+<div class="absolute left-[31px] top-4 bottom-4 w-0.5 bg-primary/20"></div>
+<!-- Event 1 -->
+<div class="relative flex items-start gap-4 p-3 group">
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-primary flex items-center justify-center shadow-sm">
+<span class="text-xs font-bold">03</span>
+</div>
+</div>
+<div class="flex-1 bg-white dark:bg-white/5 p-4 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-900 dark:text-white">BIOLOGÍA</h3>
+
+</div>
+
+</div>
+</div>
+<!-- Event 2 -->
+<div class="relative flex items-start gap-4 p-3 group">
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-primary flex items-center justify-center shadow-sm">
+<span class="text-xs font-bold">10</span>
+</div>
+</div>
+<div class="flex-1 bg-white dark:bg-white/5 p-4 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
+<div class="space-y-3">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-900 dark:text-white">LENGUA CASTELLANA</h3>
+
+</div>
+</div>
+<div class="h-px bg-slate-100 dark:bg-white/5 w-full"></div>
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-900 dark:text-white">MATEMÁTICAS</h3>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="relative flex items-start gap-4 p-3 group">
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-primary flex items-center justify-center shadow-sm">
+<span class="text-xs font-bold">24</span>
+</div>
+</div>
+<div class="flex-1 bg-white dark:bg-white/5 p-4 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-900 dark:text-white">PHYSICS</h3>
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+<!-- Month Section: March -->
+<section class="mb-8">
+<div class="px-6 py-2 sticky top-[64px] bg-background-light dark:bg-background-dark z-40">
+<h2 class="text-xs font-bold uppercase tracking-widest text-primary">Marzo 2026</h2>
+</div>
+<div class="px-4 mt-2 space-y-0 relative">
+<div class="absolute left-[31px] top-4 bottom-4 w-0.5 bg-primary/20"></div>
+<!-- Event March 1 -->
+<div class="relative flex items-start gap-4 p-3 group">
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-slate-300 dark:border-white/20 flex items-center justify-center shadow-sm">
+<span class="text-xs font-bold">10</span>
+</div>
+</div>
+<div class="flex-1 bg-white dark:bg-white/5 p-4 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
+<h3 class="font-bold text-slate-900 dark:text-white uppercase">English</h3>
+
+</div>
+</div>
+<!-- Event March 2 -->
+<div class="relative flex items-start gap-4 p-3 group">
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-slate-300 dark:border-white/20 flex items-center justify-center shadow-sm">
+<span class="text-xs font-bold">11</span>
+</div>
+</div>
+<div class="flex-1 bg-white dark:bg-white/5 p-4 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
+<h3 class="font-bold text-slate-900 dark:text-white uppercase">Geografía</h3>
+
+</div>
+</div>
+<!-- Event March 3 -->
+<div class="relative flex items-start gap-4 p-3 group">
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-slate-300 dark:border-white/20 flex items-center justify-center shadow-sm">
+<span class="text-xs font-bold">17</span>
+</div>
+</div>
+<div class="flex-1 bg-white dark:bg-white/5 p-4 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
+<div class="space-y-3">
+<h3 class="font-bold text-slate-900 dark:text-white">CHEMISTRY</h3>
+<div class="h-px bg-slate-100 dark:bg-white/5 w-full"></div>
+<h3 class="font-bold text-slate-900 dark:text-white">BIOLOGY</h3>
+</div>
+</div>
+</div>
+<!-- Event March 4 -->
+<div class="relative flex items-start gap-4 p-3 group">
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-slate-300 dark:border-white/20 flex items-center justify-center shadow-sm">
+<span class="text-xs font-bold">24</span>
+</div>
+</div>
+<div class="flex-1 bg-white dark:bg-white/5 p-4 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
+<h3 class="font-bold text-slate-900 dark:text-white uppercase">Historia</h3>
+
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-background-dark border-t border-slate-200 dark:border-white/10 px-6 pb-6 pt-3 z-50">
+<div class="max-w-md mx-auto flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium uppercase tracking-tighter">Inicio</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary transition-colors" href="#" style="color: #002c5d;">
+<span class="material-symbols-outlined font-fill-1">calendar_month</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Calendario</span>
+</a>
+<div class="relative -top-8">
+<button class="bg-primary text-white w-14 h-14 rounded-full shadow-lg shadow-primary/40 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="text-[10px] font-medium uppercase tracking-tighter">Notas</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium uppercase tracking-tighter">Perfil</span>
+</a>
+</div>
+</nav>
+</body></html>

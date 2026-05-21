@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /d/git/caa -type d -not -path */node_modules/*)",
+      "Bash(ls:*)",
+      "Bash(./gradlew assembleRelease --info)",
+      "Bash(npm install:*)",
+      "Bash(npx expo:*)",
+      "Bash(./gradlew assembleRelease)",
+      "Bash(./gradlew :app:createBundleReleaseJsAndAssets)",
+      "Bash(npx react-native:*)",
+      "Bash(eas build:*)"
+    ]
+  }
+}

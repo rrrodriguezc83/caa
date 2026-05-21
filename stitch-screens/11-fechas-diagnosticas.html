@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fechas Diagnósticas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002c5d",
+                        "brand-blue": "#002c5d",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Public Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-brand-blue text-white shadow-md">
+<div class="flex items-center justify-between px-4 py-4">
+<button class="flex items-center justify-center size-10 hover:bg-white/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold flex-1 text-center pr-10">Fechas Diagnósticas</h1>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto px-4 py-6 space-y-4 max-w-md mx-auto w-full">
+    <!-- Filter Tabs -->
+<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+    <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">2026-1</button>
+</div>
+<!-- BIOLOGÍA -->
+<div class="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700 flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<span class="text-brand-blue dark:text-primary font-bold text-base">BIOLOGÍA</span>
+<div class="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-sm font-medium">Tuesday 03 February 26</span>
+</div>
+</div>
+
+</div>
+<!-- LENGUA CASTELLANA -->
+<div class="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700 flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<span class="text-brand-blue dark:text-primary font-bold text-base">LENGUA CASTELLANA</span>
+<div class="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-sm font-medium">Tuesday 10 February 26</span>
+</div>
+</div>
+
+</div>
+<!-- MATEMÁTICAS -->
+<div class="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700 flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<span class="text-brand-blue dark:text-primary font-bold text-base">MATEMÁTICAS</span>
+<div class="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-sm font-medium">Tuesday 10 February 26</span>
+</div>
+</div>
+
+</div>
+<!-- PHYSICS -->
+<div class="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700 flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<span class="text-brand-blue dark:text-primary font-bold text-base">PHYSICS</span>
+<div class="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-sm font-medium">Tuesday 24 February 26</span>
+</div>
+</div>
+
+</div>
+<!-- ENGLISH -->
+<div class="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700 flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<span class="text-brand-blue dark:text-primary font-bold text-base">ENGLISH</span>
+<div class="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-sm font-medium">Tuesday 10 March 26</span>
+</div>
+</div>
+
+</div>
+<!-- GEOGRAFÍA -->
+<div class="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700 flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<span class="text-brand-blue dark:text-primary font-bold text-base">GEOGRAFÍA</span>
+<div class="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-sm font-medium">Wednesday 11 March 26</span>
+</div>
+</div>
+
+</div>
+<!-- CHEMISTRY -->
+<div class="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700 flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<span class="text-brand-blue dark:text-primary font-bold text-base">CHEMISTRY</span>
+<div class="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-sm font-medium">Tuesday 17 March 26</span>
+</div>
+</div>
+
+</div>
+<!-- BIOLOGY (DUPLICATE IN DATA) -->
+<div class="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700 flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<span class="text-brand-blue dark:text-primary font-bold text-base">BIOLOGY</span>
+<div class="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-sm font-medium">Tuesday 17 March 26</span>
+</div>
+</div>
+
+</div>
+<!-- HISTORIA -->
+<div class="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700 flex items-center justify-between mb-8">
+<div class="flex flex-col gap-1">
+<span class="text-brand-blue dark:text-primary font-bold text-base">HISTORIA</span>
+<div class="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-sm font-medium">Tuesday 24 March 26</span>
+</div>
+</div>
+
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="sticky bottom-0 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 pb-safe">
+<div class="flex items-center justify-around h-16 max-w-md mx-auto">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center gap-1 text-neutral-400 dark:text-neutral-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<!-- Notas (Active) -->
+<a class="flex flex-col items-center justify-center gap-1 text-brand-blue dark:text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
+<span class="text-[10px] font-bold">Notas</span>
+</a>
+<!-- Calendario -->
+<a class="flex flex-col items-center justify-center gap-1 text-neutral-400 dark:text-neutral-500" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="text-[10px] font-medium">Calendario</span>
+</a>
+<!-- Perfil -->
+<a class="flex flex-col items-center justify-center gap-1 text-neutral-400 dark:text-neutral-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Perfil</span>
+</a>
+</div>
+</nav>
+</body></html>

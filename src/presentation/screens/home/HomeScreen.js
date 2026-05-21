@@ -19,8 +19,20 @@ import {
   Avatar, Divider, Button, List, Badge, IconButton,
 } from 'react-native-paper';
 import RenderHTML from 'react-native-render-html';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { container } from '../../../di/container';
+import { setSession, clearSession } from '../../../shared/session';
+import { apiClient } from '../../../data/datasources/remote/ApiClient';
+import { API_URLS } from '../../../shared/constants/apiRoutes';
 import { toCapitalCase, capitalizeFirst, transformTextToHtml, getImageUri } from '../../../shared/utils/textHelpers';
+import {
+  getTodayLocal,
+  getNextSchoolDayDate,
+  findDaySchool,
+  getWeekdayDiaForSchedule,
+  uniformeLabelFromCodigo,
+} from '../../../shared/utils/schoolCalendar';
+import { getScheduleForCourse } from '../../../data/datasources/remote/firebaseScheduleService';
 
 const {
   authRepository, userRepository, studentRepository,
@@ -48,7 +60,10 @@ const HomeScreen = ({ navigation }) => {
   const [studentInfo, setStudentInfo] = useState(null);
   const [worksList, setWorksList] = useState(null);
   const [remindersList, setRemindersList] = useState(null);
-  const [expandedTodayItems, setExpandedTodayItems] = useState({});
+  const [schedule, setSchedule] = useState(null);
+  /** Respuesta de getCalendar (compartida con Agenda Virtual vía params) */
+  const [calendarData, setCalendarData] = useState(null);
+  const [expandedTomorrowItems, setExpandedTomorrowItems] = useState({});
   const [otrosExpanded, setOtrosExpanded] = useState(false);
 
   const slideAnim = useRef(new Animated.Value(-300)).current;
@@ -71,28 +86,33 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const getTodayItems = () => {
-    const today = new Date();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate() - 1).padStart(2, '0');
+  const getTomorrowItems = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const day = String(tomorrow.getDate()).padStart(2, '0');
     const items = [];
-    if (worksList && worksList[month] && worksList[month][day]) {
-      let todayWorks = worksList[month][day];
-      todayWorks = todayWorks.concat(worksList[month][day - 3]);
-      todayWorks.forEach(work => {
-        items.push({ type: 'work', subject: work.subject, description: work.description, teacher: work.name_teacher, id: work.id_work });
+    if (worksList && worksList[month]) {
+      const tomorrowWorks = Array.isArray(worksList[month][day]) ? worksList[month][day] : [];
+      tomorrowWorks.forEach(work => {
+        if (work && work.subject != null) {
+          items.push({ type: 'work', subject: work.subject, description: work.description, teacher: work.name_teacher, id: work.id_work });
+        }
       });
     }
     if (remindersList && remindersList[month] && remindersList[month][day]) {
-      remindersList[month][day].forEach(reminder => {
-        items.push({ type: 'reminder', description: reminder.description, id: reminder.id_reminder });
+      const tomorrowReminders = Array.isArray(remindersList[month][day]) ? remindersList[month][day] : [];
+      tomorrowReminders.forEach(reminder => {
+        if (reminder && reminder.description != null) {
+          items.push({ type: 'reminder', description: reminder.description, id: reminder.id_reminder });
+        }
       });
     }
     return items;
   };
 
-  const toggleTodayItem = (itemKey) => {
-    setExpandedTodayItems(prev => ({ ...prev, [itemKey]: !prev[itemKey] }));
+  const toggleTomorrowItem = (itemKey) => {
+    setExpandedTomorrowItems(prev => ({ ...prev, [itemKey]: !prev[itemKey] }));
   };
 
   const fetchNotifications = async () => {
@@ -109,6 +129,19 @@ const HomeScreen = ({ navigation }) => {
         setNotifications(processedNotifications);
       } else { setNotifications([]); }
     } catch (error) { console.error('Error al cargar notificaciones:', error); }
+  };
+
+  const fetchCalendarData = async () => {
+    try {
+      const data = await apiClient.post(API_URLS.WORK_CLASS, {
+        base: 'caa',
+        param: 'getCalendar',
+        mod_check: 'false',
+      });
+      if (data.code === 200) setCalendarData(data.response);
+    } catch (error) {
+      console.error('Error al cargar el calendario escolar:', error);
+    }
   };
 
   const fetchCirculares = async () => {
@@ -172,19 +205,35 @@ const HomeScreen = ({ navigation }) => {
     const fetchData = async () => {
       try {
         const infoResponse = await userRepository.getInfo();
-        if (infoResponse.code === 200 && infoResponse.response?.[0]) setUserInfo(infoResponse.response[0]);
+        if (infoResponse.code === 200 && infoResponse.response?.[0]) {
+          setUserInfo(infoResponse.response[0]);
+          setSession(infoResponse.response[0]);
+        }
         const mainResponse = await userRepository.getMain();
         if (mainResponse.code === 200) setMainContent(mainResponse.response);
-        await fetchNotifications();
-        await fetchCirculares();
+        await Promise.all([fetchNotifications(), fetchCirculares(), fetchCalendarData()]);
         const studentResponse = await studentRepository.getInfoStudent();
         if (studentResponse.code === 200 && studentResponse.response) {
           setStudentInfo(studentResponse.response);
           const idCourse = studentResponse.response.id_course;
+
           const worksResponse = await studentRepository.getListWorks(idCourse);
           if (worksResponse.code === 200 && worksResponse.response) setWorksList(worksResponse.response);
+
           const remindersResponse = await studentRepository.getListReminders(idCourse);
           if (remindersResponse.code === 200 && remindersResponse.response) setRemindersList(remindersResponse.response);
+
+          // Horario desde Firestore (colección "horarios", doc = id_course)
+          try {
+            const scheduleData = await getScheduleForCourse(idCourse);
+            if (scheduleData) {
+              setSchedule(scheduleData);
+            } else {
+              setSchedule(null);
+            }
+          } catch (scheduleError) {
+            console.error('Error al cargar horario desde Firestore:', scheduleError);
+          }
         }
       } catch (error) { console.error('Error al cargar datos:', error); showSnackbar('No se pudo cargar la información'); }
       finally { setLoading(false); }
@@ -197,10 +246,36 @@ const HomeScreen = ({ navigation }) => {
   const handleMenuPress = (item, label) => {
     setActiveDrawerItem(item); closeDrawer();
     if (item === 'home') { showSnackbar('Estás en Home'); return; }
-    const labelLower = (label || '').toLowerCase();
-    if (labelLower === 'agenda virtual') { navigation.navigate('AgendaVirtual'); return; }
-    if (labelLower === 'enfermería') { navigation.navigate('Enfermeria'); return; }
-    if (labelLower === 'circulares') { navigation.navigate('Circulares'); return; }
+    const labelLower = (label || '').toLowerCase().trim();
+    const screenMap = {
+      'agenda virtual': 'AgendaVirtual',
+      'enfermería': 'Enfermeria',
+      'circulares': 'ModuloCirculares',
+      'deportes': 'Deportes',
+      'extra escolares': 'ExtraEscolares',
+      'académico': 'Academico',
+      'cartera': 'Cartera',
+      'matrículas': 'Matriculas',
+      'información': 'Informacion',
+      'cambio de clave': 'CambioClave',
+      'camdio de clave': 'CambioClave',
+      'planeación': 'Planeacion',
+      'planeación ': 'Planeacion',
+      'comunicaciones': 'Comunicaciones',
+      'calendario curricular': 'CalendarioCurricular',
+      'menú escolar': 'MenuEscolar',
+      'entrevista': 'Entrevista',
+      'ayuda': 'Ayuda',
+    };
+    const screenName = screenMap[labelLower];
+    if (screenName) {
+      if (screenName === 'AgendaVirtual') {
+        navigation.navigate('AgendaVirtual', { calendarData });
+      } else {
+        navigation.navigate(screenName);
+      }
+      return;
+    }
     navigation.navigate('Module', { moduleName: label, moduleId: item });
   };
 
@@ -208,6 +283,7 @@ const HomeScreen = ({ navigation }) => {
     try {
       closeDrawer(); setLoading(true);
       await authRepository.logout();
+      clearSession();
       navigation.replace('Login');
     } catch (error) { console.error('Error al cerrar sesión:', error); showSnackbar('Error al cerrar sesión'); setLoading(false); }
   };
@@ -225,6 +301,63 @@ const HomeScreen = ({ navigation }) => {
     };
     return iconMap[(module || '').toLowerCase()] || 'circle-medium';
   };
+
+  /** Siguiente día lectivo: mar→mié, vie→lun. Horario Firestore: dia 1=lun … 6=sáb. */
+  const todayLocal = getTodayLocal();
+  const nextSchoolDate = getNextSchoolDayDate(todayLocal);
+  const daySchoolFromCalendar = findDaySchool(calendarData, nextSchoolDate);
+  const weekdayDia = getWeekdayDiaForSchedule(nextSchoolDate);
+  
+  console.log('daySchoolFromCalendar', daySchoolFromCalendar);
+
+  let horarioNext = null;
+  if (Array.isArray(schedule?.horario) && schedule.horario.length > 0) {
+    if (daySchoolFromCalendar != null) {
+      horarioNext = schedule.horario.find(
+        (h) => Number(h.dia) === Number(daySchoolFromCalendar)
+      );
+    }
+  }
+
+  const diaLabel =
+    daySchoolFromCalendar ?? horarioNext?.dia ?? null;
+
+  console.log('diaLabel', diaLabel);
+
+  const uniformeNext =
+    horarioNext != null
+      ? uniformeLabelFromCodigo(horarioNext.codigo_uniforme) ||
+        (horarioNext.desc_uniforme
+          ? `Uniforme: ${horarioNext.desc_uniforme}`
+          : 'Uniforme: —')
+      : 'Uniforme: Sudadera';
+    console.log('uniformeNext', uniformeNext);
+    console.log('horarioNext', horarioNext);
+    console.log('daySchoolFromCalendar', daySchoolFromCalendar);
+
+  const showSchoolDayCard =  diaLabel != null;
+
+  /** Icono según codigo_uniforme: 1 camisa formal, 2 camiseta */
+  const uniformDecorIcon = (() => {
+    const n = Number(horarioNext?.codigo_uniforme);
+    if (n === 1) return 'hail';
+    if (n === 2) return 'gymnastics';
+    //if (uniformeNext && /Diario/i.test(uniformeNext)) return 'hail';
+    //if (uniformeNext && /Sudadera/i.test(uniformeNext)) return 'gymnastics';
+    return 'gymnastics';
+  })();
+
+  const nextSchoolDateFormatted = capitalizeFirst(
+    new Date(
+      parseInt(nextSchoolDate.split('-')[0], 10),
+      parseInt(nextSchoolDate.split('-')[1], 10) - 1,
+      parseInt(nextSchoolDate.split('-')[2], 10)
+    ).toLocaleDateString('es-ES', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    })
+  );
 
   if (loading) {
     return (
@@ -301,51 +434,79 @@ const HomeScreen = ({ navigation }) => {
           </Card>
         )}
 
+        {showSchoolDayCard && (
+          <View style={styles.schoolDayCardWrap}>
+            <View style={styles.schoolDayBlobTop} pointerEvents="none" />
+            <View style={styles.schoolDayBlobBottom} pointerEvents="none" />
+            <View style={styles.schoolDayCardInner}>
+              <View style={styles.schoolDayCardRow}>
+                <View style={styles.schoolDayCardLeft}>
+                  <View style={styles.schoolDayBadgeRow}>
+                    <Icon name="calendar-today" size={18} color="rgba(255,255,255,0.8)" />
+                    <Text style={styles.schoolDayBadgeLabel}>
+                      {`SIGUIENTE: DÍA ${diaLabel}`}
+                    </Text>
+                  </View>
+                  <Text style={styles.schoolDayDateLine}>{nextSchoolDateFormatted}</Text>
+                  <Text style={styles.schoolDayUniformTitle}>{uniformeNext}</Text>
+                </View>
+                <View style={styles.schoolDayDecorIconWrap} pointerEvents="none">
+                  <Icon name={uniformDecorIcon} size={70} color="#FFFFFF" />
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+
         {/* Card Works and Reminders */}
-        <Card style={styles.todayScheduleCard} elevation={1}>
-          <View style={styles.todayScheduleHeader}>
-            <View style={styles.todayScheduleHeaderContent}>
-              <View style={styles.todayScheduleIconContainer}>
-                <Avatar.Icon icon="calendar-today" size={40} style={styles.todayScheduleIcon} color="#002c5d" />
+        <Card style={styles.tomorrowScheduleCard} elevation={1}>
+          <View style={styles.tomorrowScheduleHeader}>
+            <View style={styles.tomorrowScheduleHeaderContent}>
+              <View style={styles.tomorrowScheduleIconContainer}>
+                <Avatar.Icon icon="calendar-arrow-right" size={40} style={styles.tomorrowScheduleIcon} color="#002c5d" />
               </View>
               <View>
-                <Text style={styles.todayScheduleTitle}>Para hoy...</Text>
-                <Text style={styles.todayScheduleSubtitle}>
-                  {capitalizeFirst(new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }))}
+                <Text style={styles.tomorrowScheduleTitle}>Para mañana...</Text>
+                <Text style={styles.tomorrowScheduleSubtitle}>
+                  {(() => {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    return capitalizeFirst(tomorrow.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }));
+                  })()}
                 </Text>
               </View>
             </View>
           </View>
-          <Card.Content style={styles.todayScheduleContent}>
+          <Card.Content style={styles.tomorrowScheduleContent}>
             {(() => {
-              const todayItems = getTodayItems();
-              if (todayItems.length === 0) {
-                return <Text variant="bodyMedium" style={styles.cardText}>No hay actividades programadas para hoy.</Text>;
+              const tomorrowItems = getTomorrowItems();
+              if (tomorrowItems.length === 0) {
+                return <Text variant="bodyMedium" style={styles.cardText}>No hay actividades programadas para mañana.</Text>;
               }
-              const works = todayItems.filter(item => item.type === 'work');
-              const reminders = todayItems.filter(item => item.type === 'reminder');
+              const works = tomorrowItems.filter(item => item.type === 'work');
+              const reminders = tomorrowItems.filter(item => item.type === 'reminder');
               return (
                 <View style={styles.timelineContainer}>
                   <View style={styles.timelineLine} />
                   {works.map((work, index) => {
                     const itemKey = `work-${work.id}-${index}`;
-                    const isExpanded = expandedTodayItems[itemKey] || false;
+                    const isExpanded = expandedTomorrowItems[itemKey] || false;
                     return (
-                      <View key={itemKey} style={styles.todayScheduleItem}>
+                      <View key={itemKey} style={styles.tomorrowScheduleItem}>
                         <View style={styles.timelineDotContainer}><View style={styles.timelineDot}><View style={styles.timelineDotInner} /></View></View>
-                        <TouchableOpacity style={styles.todayScheduleItemCard} onPress={() => toggleTodayItem(itemKey)} activeOpacity={0.7}>
-                          <View style={styles.todayScheduleItemHeader}>
-                            <View style={styles.todayScheduleItemLeft}>
-                              <Text style={styles.todayScheduleItemTitle}>{work.subject}</Text>
-                              <View style={styles.todayScheduleItemLocation}>
+                        <TouchableOpacity style={styles.tomorrowScheduleItemCard} onPress={() => toggleTomorrowItem(itemKey)} activeOpacity={0.7}>
+                          <View style={styles.tomorrowScheduleItemHeader}>
+                            <View style={styles.tomorrowScheduleItemLeft}>
+                              <Text style={styles.tomorrowScheduleItemTitle}>{work.subject}</Text>
+                              <View style={styles.tomorrowScheduleItemLocation}>
                                 <Avatar.Icon icon="account" size={16} style={styles.locationIcon} color="#64748b" />
-                                <Text style={styles.todayScheduleItemTeacher} numberOfLines={1}>{work.teacher}</Text>
+                                <Text style={styles.tomorrowScheduleItemTeacher} numberOfLines={1}>{work.teacher}</Text>
                               </View>
                             </View>
-                            <IconButton icon={isExpanded ? "chevron-up" : "chevron-down"} size={20} iconColor="#002c5d" style={styles.todayScheduleItemChevron} />
+                            <IconButton icon={isExpanded ? "chevron-up" : "chevron-down"} size={20} iconColor="#002c5d" style={styles.tomorrowScheduleItemChevron} />
                           </View>
                           {isExpanded && (
-                            <View style={styles.todayScheduleItemDescription}>
+                            <View style={styles.tomorrowScheduleItemDescription}>
                               <RenderHTML contentWidth={windowWidth - 96} source={{ html: transformTextToHtml(work.description) }}
                                 tagsStyles={{ body: { color: '#64748b', fontSize: 12, lineHeight: 18, margin: 0, padding: 0 }, p: { margin: 0, marginBottom: 4 } }} />
                             </View>
@@ -356,20 +517,20 @@ const HomeScreen = ({ navigation }) => {
                   })}
                   {reminders.map((reminder, index) => {
                     const itemKey = `reminder-${reminder.id}-${index}`;
-                    const isExpanded = expandedTodayItems[itemKey] || false;
+                    const isExpanded = expandedTomorrowItems[itemKey] || false;
                     return (
-                      <View key={itemKey} style={styles.todayScheduleItem}>
+                      <View key={itemKey} style={styles.tomorrowScheduleItem}>
                         <View style={styles.timelineDotContainer}><View style={styles.timelineDotReminder}><View style={styles.timelineDotInnerReminder} /></View></View>
-                        <TouchableOpacity style={styles.todayScheduleReminderCard} onPress={() => toggleTodayItem(itemKey)} activeOpacity={0.7}>
-                          <View style={styles.todayScheduleItemHeader}>
-                            <View style={styles.todayScheduleItemLeft}>
-                              <Text style={styles.todayScheduleReminderTitle}>Recordatorio</Text>
-                              <View style={!isExpanded && styles.todayItemCollapsed}>
+                        <TouchableOpacity style={styles.tomorrowScheduleReminderCard} onPress={() => toggleTomorrowItem(itemKey)} activeOpacity={0.7}>
+                          <View style={styles.tomorrowScheduleItemHeader}>
+                            <View style={styles.tomorrowScheduleItemLeft}>
+                              <Text style={styles.tomorrowScheduleReminderTitle}>Recordatorio</Text>
+                              <View style={!isExpanded && styles.tomorrowItemCollapsed}>
                                 <RenderHTML contentWidth={windowWidth - 96} source={{ html: transformTextToHtml(reminder.description) }}
                                   tagsStyles={{ body: { color: '#64748b', fontSize: 12, lineHeight: 18, margin: 0, padding: 0 }, p: { margin: 0, marginBottom: 4 } }} />
                               </View>
                             </View>
-                            <IconButton icon={isExpanded ? "chevron-up" : "chevron-down"} size={20} iconColor="#64748b" style={styles.todayScheduleItemChevron} />
+                            <IconButton icon={isExpanded ? "chevron-up" : "chevron-down"} size={20} iconColor="#64748b" style={styles.tomorrowScheduleItemChevron} />
                           </View>
                         </TouchableOpacity>
                       </View>
@@ -454,6 +615,75 @@ const styles = StyleSheet.create({
   loadingText: { marginTop: 16, color: '#002c5d' },
   content: { flex: 1, paddingHorizontal: 16, paddingTop: 24, paddingBottom: 24, backgroundColor: '#f8f6f6' },
   notificationsCard: { marginBottom: 24, backgroundColor: '#FFFFFF', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(0, 44, 93, 0.05)', overflow: 'hidden' },
+  /* Tarjeta “Upcoming events / Event Card 1” (Stitch AgendaVirtual-uniforme) */
+  schoolDayCardWrap: {
+    marginBottom: 24,
+    borderRadius: 12,
+    backgroundColor: '#002c5d',
+    overflow: 'hidden',
+    shadowColor: '#002c5d',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  schoolDayBlobTop: {
+    position: 'absolute',
+    top: -64,
+    right: -64,
+    width: 128,
+    height: 128,
+    borderRadius: 64,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  schoolDayBlobBottom: {
+    position: 'absolute',
+    bottom: -48,
+    left: -48,
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+  },
+  schoolDayCardInner: { padding: 20, zIndex: 10 },
+  schoolDayCardRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  schoolDayCardLeft: { flex: 1, paddingRight: 8 },
+  schoolDayBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 6,
+  },
+  schoolDayBadgeLabel: {
+    fontSize: 11,
+    fontFamily: 'Inter_700Bold',
+    fontWeight: '700',
+    color: 'rgba(255,255,255,0.8)',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  schoolDayDateLine: {
+    fontSize: 13,
+    fontFamily: 'Inter_400Regular',
+    color: 'rgba(255,255,255,0.7)',
+    marginBottom: 8,
+    textTransform: 'capitalize',
+  },
+  schoolDayUniformTitle: {
+    fontSize: 20,
+    fontFamily: 'Inter_700Bold',
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  schoolDayDecorIconWrap: {
+    opacity: 0.2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   notificationsHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(0, 44, 93, 0.05)' },
   notificationsHeaderLeft: { flexDirection: 'row', alignItems: 'center', flex: 1, gap: 12 },
   notificationIconContainer: { width: 40, height: 40, borderRadius: 8, backgroundColor: 'rgba(0, 44, 93, 0.1)', alignItems: 'center', justifyContent: 'center', position: 'relative' },
@@ -494,34 +724,34 @@ const styles = StyleSheet.create({
   logoutSection: { paddingVertical: 8, paddingBottom: 16, backgroundColor: '#f8f6f6', paddingHorizontal: 8 },
   logoutItem: { borderRadius: 12, height: 56, backgroundColor: 'transparent' },
   logoutLabel: { color: '#dc2626', fontWeight: '700', fontSize: 16 },
-  todayScheduleCard: { marginBottom: 24, backgroundColor: '#FFFFFF', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(0, 44, 93, 0.05)', overflow: 'hidden' },
-  todayScheduleHeader: { padding: 16 },
-  todayScheduleHeaderContent: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  todayScheduleIconContainer: { width: 40, height: 40, borderRadius: 8, backgroundColor: 'rgba(0, 44, 93, 0.1)', alignItems: 'center', justifyContent: 'center' },
-  todayScheduleIcon: { backgroundColor: 'transparent', width: 40, height: 40 },
-  todayScheduleTitle: { fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold', color: '#221610', marginBottom: 2 },
-  todayScheduleSubtitle: { fontSize: 12, fontFamily: 'Inter_400Regular', color: '#64748b', textTransform: 'capitalize' },
-  todayScheduleContent: { paddingTop: 8 },
+  tomorrowScheduleCard: { marginBottom: 24, backgroundColor: '#FFFFFF', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(0, 44, 93, 0.05)', overflow: 'hidden' },
+  tomorrowScheduleHeader: { padding: 16 },
+  tomorrowScheduleHeaderContent: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  tomorrowScheduleIconContainer: { width: 40, height: 40, borderRadius: 8, backgroundColor: 'rgba(0, 44, 93, 0.1)', alignItems: 'center', justifyContent: 'center' },
+  tomorrowScheduleIcon: { backgroundColor: 'transparent', width: 40, height: 40 },
+  tomorrowScheduleTitle: { fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold', color: '#221610', marginBottom: 2 },
+  tomorrowScheduleSubtitle: { fontSize: 12, fontFamily: 'Inter_400Regular', color: '#64748b', textTransform: 'capitalize' },
+  tomorrowScheduleContent: { paddingTop: 8 },
   timelineContainer: { position: 'relative' },
   timelineLine: { position: 'absolute', left: 19, top: 8, bottom: 8, width: 2, backgroundColor: 'rgba(0, 44, 93, 0.1)' },
-  todayScheduleItem: { position: 'relative', paddingLeft: 48, marginBottom: 24 },
+  tomorrowScheduleItem: { position: 'relative', paddingLeft: 48, marginBottom: 24 },
   timelineDotContainer: { position: 'absolute', left: 0, top: 4, width: 40, alignItems: 'center', justifyContent: 'center' },
   timelineDot: { width: 16, height: 16, borderRadius: 8, backgroundColor: 'rgba(0, 44, 93, 0.2)', alignItems: 'center', justifyContent: 'center' },
   timelineDotInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#002c5d' },
   timelineDotReminder: { width: 16, height: 16, borderRadius: 8, backgroundColor: 'rgba(148, 163, 184, 0.2)', alignItems: 'center', justifyContent: 'center' },
   timelineDotInnerReminder: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#94a3b8' },
-  todayScheduleItemCard: { backgroundColor: 'rgba(0, 44, 93, 0.05)', borderRadius: 8, padding: 12, borderWidth: 1, borderColor: 'rgba(0, 44, 93, 0.1)' },
-  todayScheduleReminderCard: { backgroundColor: '#FFFFFF', borderRadius: 8, padding: 12, borderWidth: 1, borderColor: '#e2e8f0' },
-  todayScheduleItemHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
-  todayScheduleItemLeft: { flex: 1, marginRight: 8 },
-  todayScheduleItemTitle: { fontSize: 14, fontFamily: 'Inter_700Bold', fontWeight: 'bold', color: '#221610', marginBottom: 6 },
-  todayScheduleReminderTitle: { fontSize: 14, fontFamily: 'Inter_700Bold', fontWeight: 'bold', color: '#64748b', marginBottom: 6 },
-  todayScheduleItemLocation: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  tomorrowScheduleItemCard: { backgroundColor: 'rgba(0, 44, 93, 0.05)', borderRadius: 8, padding: 12, borderWidth: 1, borderColor: 'rgba(0, 44, 93, 0.1)' },
+  tomorrowScheduleReminderCard: { backgroundColor: '#FFFFFF', borderRadius: 8, padding: 12, borderWidth: 1, borderColor: '#e2e8f0' },
+  tomorrowScheduleItemHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+  tomorrowScheduleItemLeft: { flex: 1, marginRight: 8 },
+  tomorrowScheduleItemTitle: { fontSize: 14, fontFamily: 'Inter_700Bold', fontWeight: 'bold', color: '#221610', marginBottom: 6 },
+  tomorrowScheduleReminderTitle: { fontSize: 14, fontFamily: 'Inter_700Bold', fontWeight: 'bold', color: '#64748b', marginBottom: 6 },
+  tomorrowScheduleItemLocation: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
   locationIcon: { backgroundColor: 'transparent', width: 16, height: 16 },
-  todayScheduleItemTeacher: { fontSize: 12, fontFamily: 'Inter_400Regular', color: '#64748b', flex: 1 },
-  todayScheduleItemChevron: { margin: 0, marginTop: -8, marginRight: -8 },
-  todayScheduleItemDescription: { marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(0, 44, 93, 0.1)' },
-  todayItemCollapsed: { maxHeight: 18, overflow: 'hidden' },
+  tomorrowScheduleItemTeacher: { fontSize: 12, fontFamily: 'Inter_400Regular', color: '#64748b', flex: 1 },
+  tomorrowScheduleItemChevron: { margin: 0, marginTop: -8, marginRight: -8 },
+  tomorrowScheduleItemDescription: { marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(0, 44, 93, 0.1)' },
+  tomorrowItemCollapsed: { maxHeight: 18, overflow: 'hidden' },
 });
 
 export default HomeScreen;

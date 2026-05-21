@@ -178,7 +178,7 @@ const EnfermeriaScreen = ({ navigation }) => {
 
         {/* Section Title */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Historial Médico</Text>
+          <Text style={styles.sectionTitle}>Historial Visitas</Text>
         </View>
 
         {/* Visit Cards */}

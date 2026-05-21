@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "brand-blue": "#002c5d",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<title>Agenda Escolar</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-slate-100">
+<div class="relative flex h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-white dark:bg-background-dark shadow-2xl">
+<!-- Top Header -->
+<header class="flex items-center bg-brand-blue p-4 sticky top-0 z-10 shadow-md">
+<button class="text-white hover:bg-white/10 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-white text-xl font-bold ml-2">Agenda Escolar</h1>
+</header>
+<!-- Main Content Scrollable Area -->
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Calendar Section -->
+<div class="p-4 bg-white dark:bg-zinc-900 border-b border-slate-200 dark:border-zinc-800">
+<div class="flex items-center justify-between mb-4">
+<button class="p-1 hover:bg-slate-100 dark:hover:bg-zinc-800 rounded-full">
+<span class="material-symbols-outlined text-brand-blue dark:text-primary">chevron_left</span>
+</button>
+<h2 class="text-lg font-bold text-brand-blue dark:text-white">Febrero 2026</h2>
+<button class="p-1 hover:bg-slate-100 dark:hover:bg-zinc-800 rounded-full">
+<span class="material-symbols-outlined text-brand-blue dark:text-primary">chevron_right</span>
+</button>
+</div>
+<!-- Calendar Grid -->
+<div class="grid grid-cols-7 gap-1 text-center">
+<div class="text-[11px] font-bold text-slate-400 uppercase">Dom</div>
+<div class="text-[11px] font-bold text-slate-400 uppercase">Lun</div>
+<div class="text-[11px] font-bold text-slate-400 uppercase">Mar</div>
+<div class="text-[11px] font-bold text-slate-400 uppercase">Mié</div>
+<div class="text-[11px] font-bold text-slate-400 uppercase">Jue</div>
+<div class="text-[11px] font-bold text-slate-400 uppercase">Vie</div>
+<div class="text-[11px] font-bold text-slate-400 uppercase">Sáb</div>
+<!-- Row 1 -->
+<div class="h-10 flex items-center justify-center text-sm font-medium text-slate-300">26</div>
+<div class="h-10 flex items-center justify-center text-sm font-medium text-slate-300">27</div>
+<div class="h-10 flex items-center justify-center text-sm font-medium text-slate-300">28</div>
+<div class="h-10 flex items-center justify-center text-sm font-medium text-slate-300">29</div>
+<div class="h-10 flex items-center justify-center text-sm font-medium text-slate-300">30</div>
+<div class="h-10 flex items-center justify-center text-sm font-medium text-slate-300">31</div>
+<button class="h-10 w-10 mx-auto flex items-center justify-center rounded-full text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-zinc-800">1</button>
+<!-- Row 2 -->
+<button class="h-10 w-10 mx-auto flex items-center justify-center rounded-full text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-zinc-800">2</button>
+<button class="h-10 w-10 mx-auto flex items-center justify-center rounded-full text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-zinc-800">3</button>
+<button class="h-10 w-10 mx-auto flex items-center justify-center rounded-full text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-zinc-800">4</button>
+<button class="h-10 w-10 mx-auto flex items-center justify-center rounded-full text-sm font-bold bg-primary text-white shadow-lg shadow-primary/30">5</button>
+<button class="h-10 w-10 mx-auto flex items-center justify-center rounded-full text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-zinc-800">6</button>
+<button class="h-10 w-10 mx-auto flex items-center justify-center rounded-full text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-zinc-800">7</button>
+<button class="h-10 w-10 mx-auto flex items-center justify-center rounded-full text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-zinc-800">8</button>
+</div>
+</div>
+<!-- Activities Section -->
+<div class="px-4 pt-6 pb-2">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-xl font-bold text-brand-blue dark:text-white">Próximas Actividades</h2>
+<span class="text-xs font-semibold bg-brand-blue/10 dark:bg-primary/20 text-brand-blue dark:text-primary px-2 py-1 rounded-full uppercase tracking-wider">Febrero</span>
+</div>
+<div class="space-y-4">
+<!-- Activity 1 -->
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-zinc-800 flex gap-4 items-start">
+<div class="flex-shrink-0 size-12 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">corporate_fare</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-800 dark:text-slate-100 leading-tight">Planeacion Institucional</h3>
+<span class="text-[10px] font-black bg-emerald-500 text-white px-2 py-0.5 rounded-full">GEN</span>
+</div>
+<div class="flex items-center mt-1 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-sm mr-1">calendar_today</span>
+<p class="text-sm">14 Ene - 23 Ene</p>
+</div>
+</div>
+</div>
+<!-- Activity 2 -->
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-zinc-800 flex gap-4 items-start">
+<div class="flex-shrink-0 size-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">school</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-800 dark:text-slate-100 leading-tight">Primer Trimestre Bachillerato</h3>
+<span class="text-[10px] font-black bg-indigo-500 text-white px-2 py-0.5 rounded-full">BAC</span>
+</div>
+<div class="flex items-center mt-1 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-sm mr-1">event</span>
+<p class="text-sm">01 Feb 2026</p>
+</div>
+</div>
+</div>
+<!-- Activity 3 -->
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-zinc-800 flex gap-4 items-start">
+<div class="flex-shrink-0 size-12 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-amber-600 dark:text-amber-400">sports_soccer</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-800 dark:text-slate-100 leading-tight">Actividades Extracurriculares</h3>
+<span class="text-[10px] font-black bg-amber-500 text-white px-2 py-0.5 rounded-full">GEN</span>
+</div>
+<div class="flex items-center mt-1 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-sm mr-1">schedule</span>
+<p class="text-sm">05 Feb 2026</p>
+</div>
+</div>
+</div>
+<!-- Activity 4 -->
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-zinc-800 flex gap-4 items-start">
+<div class="flex-shrink-0 size-12 rounded-lg bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-sky-600 dark:text-sky-400">analytics</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-800 dark:text-slate-100 leading-tight">Seguimientos Académicos</h3>
+<span class="text-[10px] font-black bg-sky-500 text-white px-2 py-0.5 rounded-full">GEN</span>
+</div>
+<div class="flex items-center mt-1 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-sm mr-1">checklist</span>
+<p class="text-sm">10 Feb 2026</p>
+</div>
+</div>
+</div>
+<!-- Activity 5 -->
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-zinc-800 flex gap-4 items-start">
+<div class="flex-shrink-0 size-12 rounded-lg bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-rose-600 dark:text-rose-400">child_care</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-800 dark:text-slate-100 leading-tight">Primer Trimestre Primaria y Preescolar</h3>
+<div class="flex gap-1">
+<span class="text-[10px] font-black bg-rose-500 text-white px-2 py-0.5 rounded-full">PRI</span>
+<span class="text-[10px] font-black bg-orange-500 text-white px-2 py-0.5 rounded-full">PRE</span>
+</div>
+</div>
+<div class="flex items-center mt-1 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-sm mr-1">event_available</span>
+<p class="text-sm">12 Feb 2026</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white dark:bg-zinc-950 border-t border-slate-200 dark:border-zinc-800 flex justify-around items-center px-4 py-3 z-20">
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-brand-blue dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Inicio</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-brand-blue dark:text-primary" href="#">
+<span class="material-symbols-outlined font-variation-fill">calendar_month</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Agenda</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-brand-blue dark:hover:text-primary transition-colors" href="#">
+<div class="relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute -top-1 -right-1 size-2 bg-primary rounded-full border-2 border-white dark:border-zinc-950"></span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Notif.</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-brand-blue dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Perfil</span>
+</a>
+</nav>
+</div>
+</body></html>

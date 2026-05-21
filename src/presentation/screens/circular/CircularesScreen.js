@@ -127,7 +127,7 @@ const CircularesScreen = ({ navigation, route }) => {
                   <View style={styles.cardContent}>
                     <Text style={styles.circularNumber}>Circular {circular.circular}</Text>
                     <Text style={styles.circularTitle} numberOfLines={1}>{circular.subject}</Text>
-                    <Text style={styles.circularDescription} numberOfLines={1}>{circular.description || 'Sin descripción'}</Text>
+                    <Text style={styles.circularDescription} numberOfLines={1}>{circular.date_send ?? circular.dateSend ?? '—'}</Text>
                   </View>
                   <View style={styles.badgesContainer}>
                     <View style={[styles.badge, isVista ? styles.badgeConsultationDone : styles.badgeConsultationPending]}>

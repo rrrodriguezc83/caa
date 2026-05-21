@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fechas Diagnósticas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002c5d",
+                        "brand-blue": "#002c5d",
+                        "brand-dark": "#002c5d",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .timeline-line {
+            width: 2px;
+            background-color: #e5e7eb;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 19px;
+            z-index: 0;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-brand-blue text-white shadow-md">
+    <div class="flex items-center justify-between px-4 py-4">
+    <button class="flex items-center justify-center size-10 hover:bg-white/10 rounded-full transition-colors">
+    <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <h1 class="text-lg font-bold flex-1 text-center pr-10">Fechas Diagnósticas</h1>
+    </div>
+    </header>
+<!-- Timeline Content -->
+<main class="flex-1 overflow-y-auto px-4 py-6">
+    <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+        <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">2026-1</button>
+    </div>
+<!-- FEBRUARY 2026 -->
+<section class="mb-10">
+<h2 class="text-brand-dark dark:text-white/80 text-xs font-bold tracking-widest uppercase mb-6 px-2">FEBRUARY 2026</h2>
+<div class="relative space-y-8">
+<div class="timeline-line dark:bg-white/10"></div>
+<!-- Item 1 -->
+<div class="relative flex items-center gap-4 group">
+<div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-gray-300 dark:border-white/20 text-gray-500 dark:text-gray-400 font-bold text-sm">03</div>
+
+<div class="bg-white rounded-xl p-3 flex items-center gap-4 shadow-sm w-full border-l-4 border-[#002c5d]" data-purpose="subject-card">
+<div class="bg-[#e6eaf0] p-2 rounded-lg text-[#002c5d]">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="font-bold text-gray-800 uppercase text-sm">BIOLOGÍA</span>
+</div>
+
+</div>
+<!-- Item 2 -->
+<div class="relative flex items-center gap-4 group">
+<div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-gray-300 dark:border-white/20 text-gray-500 dark:text-gray-400 font-bold text-sm">
+10
+</div>
+<div class="bg-white rounded-xl p-4 flex items-center gap-4 shadow-sm w-full border-l-4 border-[#002c5d]" data-purpose="subject-card">
+<div class="bg-[#e6eaf0] p-2 rounded-lg text-[#002c5d]">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="font-bold text-gray-800 uppercase text-sm">LENGUA CASTELLANA</span>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="relative flex items-center gap-4 group">
+<div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-gray-300 dark:border-white/20 text-gray-500 dark:text-gray-400 font-bold text-sm">
+                        10
+                    </div>
+                    <div class="bg-white rounded-xl p-4 flex items-center gap-4 shadow-sm w-full border-l-4 border-[#002c5d]" data-purpose="subject-card">
+                        <div class="bg-[#e6eaf0] p-2 rounded-lg text-[#002c5d]">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                        </div>
+                        <span class="font-bold text-gray-800 uppercase text-sm">MATEMÁTICAS</span>
+                        </div>
+</div>
+<!-- Item 4 -->
+<div class="relative flex items-center gap-4 group">
+<div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-gray-300 dark:border-white/20 text-gray-500 dark:text-gray-400 font-bold text-sm">
+                        24
+                    </div>
+                    <div class="bg-white rounded-xl p-4 flex items-center gap-4 shadow-sm w-full border-l-4 border-[#002c5d]" data-purpose="subject-card">
+                        <div class="bg-[#e6eaf0] p-2 rounded-lg text-[#002c5d]">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                        </div>
+                        <span class="font-bold text-gray-800 uppercase text-sm">PHYSICS</span>
+                        </div>
+</div>
+</div>
+</section>
+<!-- MARCH 2026 -->
+<section class="mb-20">
+<h2 class="text-brand-dark dark:text-white/80 text-xs font-bold tracking-widest uppercase mb-6 px-2">MARCH 2026</h2>
+<div class="relative space-y-8">
+<div class="timeline-line dark:bg-white/10"></div>
+<!-- March Items -->
+<div class="relative flex items-center gap-4 group">
+<div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-gray-300 dark:border-white/20 text-gray-500 dark:text-gray-400 font-bold text-sm">
+10
+</div>
+<div class="bg-white rounded-xl p-4 flex items-center gap-4 shadow-sm w-full border-l-4 border-[#002c5d]" data-purpose="subject-card">
+<div class="bg-[#e6eaf0] p-2 rounded-lg text-[#002c5d]">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="font-bold text-gray-800 uppercase text-sm">ENGLISH</span>
+</div>
+</div>
+<div class="relative flex items-center gap-4 group">
+<div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-gray-300 dark:border-white/20 text-gray-500 dark:text-gray-400 font-bold text-sm">
+11
+</div>
+<div class="bg-white rounded-xl p-4 flex items-center gap-4 shadow-sm w-full border-l-4 border-[#002c5d]" data-purpose="subject-card">
+<div class="bg-[#e6eaf0] p-2 rounded-lg text-[#002c5d]">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="font-bold text-gray-800 uppercase text-sm">GEOGRAFÍA</span>
+</div>
+</div>
+<div class="relative flex items-center gap-4 group">
+<div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-gray-300 dark:border-white/20 text-gray-500 dark:text-gray-400 font-bold text-sm">
+17
+</div>
+<div class="bg-white rounded-xl p-4 flex items-center gap-4 shadow-sm w-full border-l-4 border-[#002c5d]" data-purpose="subject-card">
+<div class="bg-[#e6eaf0] p-2 rounded-lg text-[#002c5d]">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="font-bold text-gray-800 uppercase text-sm">CHEMISTRY</span>
+</div>
+</div>
+<div class="relative flex items-center gap-4 group">
+<div class="z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-white/10 border-2 border-gray-300 dark:border-white/20 text-gray-500 dark:text-gray-400 font-bold text-sm">
+17
+</div>
+<div class="bg-white rounded-xl p-4 flex items-center gap-4 shadow-sm w-full border-l-4 border-[#002c5d]" data-purpose="subject-card">
+<div class="bg-[#e6eaf0] p-2 rounded-lg text-[#002c5d]">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="font-bold text-gray-800 uppercase text-sm">BIOLOGY</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform z-40">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="sticky bottom-0 bg-white dark:bg-background-dark border-t border-gray-200 dark:border-white/10 px-2 pb-6 pt-2">
+<div class="flex justify-around items-center">
+<a class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Inicio</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">calendar_month</span>
+<span class="text-[10px] font-bold">Calendario</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="text-[10px] font-medium">Notas</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Perfil</span>
+</a>
+</div>
+</nav>
+</body></html>

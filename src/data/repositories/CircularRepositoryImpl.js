@@ -23,6 +23,15 @@ export class CircularRepositoryImpl extends CircularRepository {
     return data;
   }
 
+  async getNoticesSurveys() {
+    const data = await this.apiClient.post(API_URLS.NOTICES, {
+      base: 'comunidad',
+      param: 'getNotices',
+      surveys: 'true',
+    });
+    return data;
+  }
+
   async getNoticeContent(circularNumber) {
     console.log('=== getNoticeContent ===');
     console.log('  - circular:', circularNumber);
@@ -53,6 +62,31 @@ export class CircularRepositoryImpl extends CircularRepository {
     });
 
     console.log('Respuesta sendConsult:', data);
+    return data;
+  }
+
+  /**
+   * Encuestas: getSurveyDefinitionForRender (base encuestas, form-data).
+   * Guarda/retorna JSON con encuesta, secciones, preguntas, opciones, logica.
+   */
+  async getSurveyDefinitionForRender(num_survey) {
+    const data = await this.apiClient.post(API_URLS.NOTICES, {
+      base: 'encuestas',
+      param: 'getSurveyDefinitionForRender',
+      num_survey: String(num_survey),
+    });
+    return data;
+  }
+
+  /**
+   * Encuestas: dataSurvey (base comunidad) — Date_Start, Date_End, Answer, Course, Names...
+   */
+  async dataSurvey(num_survey) {
+    const data = await this.apiClient.post(API_URLS.NOTICES, {
+      base: 'comunidad',
+      param: 'dataSurvey',
+      num_survey: String(num_survey),
+    });
     return data;
   }
 }
