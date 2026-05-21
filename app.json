@@ -31,6 +31,12 @@
     },
     "experiments": {
       "newArchEnabled": false
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "886102a1-de51-4434-8d7c-61fb012f1327"
+      }
+    },
+    "owner": "rrrodriguez"
   }
 }
