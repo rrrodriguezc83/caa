@@ -31,6 +31,11 @@ import ActualizacionDatosScreen from '../screens/matriculas/ActualizacionDatosSc
 import FirmaElectronicaScreen from '../screens/matriculas/FirmaElectronicaScreen';
 import InformacionServiciosScreen from '../screens/matriculas/InformacionServiciosScreen';
 import InformacionScreen from '../screens/informacion/InformacionScreen';
+import ManualConvivenciaScreen from '../screens/informacion/ManualConvivenciaScreen';
+import CostosScreen from '../screens/informacion/CostosScreen';
+import AtencionPsicologicaScreen from '../screens/informacion/AtencionPsicologicaScreen';
+import PoliticasSeguridadScreen from '../screens/informacion/PoliticasSeguridadScreen';
+import PolizaSeguroScreen from '../screens/informacion/PolizaSeguroScreen';
 import CambioClaveScreen from '../screens/cambioClave/CambioClaveScreen';
 import PlaneacionScreen from '../screens/planeacion/PlaneacionScreen';
 import ComunicacionesScreen from '../screens/comunicaciones/ComunicacionesScreen';
@@ -187,6 +192,31 @@ const AppNavigator = () => {
       <Stack.Screen
         name="Informacion"
         component={InformacionScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ManualConvivencia"
+        component={ManualConvivenciaScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Costos"
+        component={CostosScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AtencionPsicologica"
+        component={AtencionPsicologicaScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PoliticasSeguridad"
+        component={PoliticasSeguridadScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PolizaSeguro"
+        component={PolizaSeguroScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

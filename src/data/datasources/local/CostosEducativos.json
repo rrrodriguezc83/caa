@@ -1,0 +1,72 @@
+[
+  {
+    "grado": "Prejardín",
+    "matricula": 2554797,
+    "pension": 2299317
+  },
+  {
+    "grado": "Jardín",
+    "matricula": 2554797,
+    "pension": 2299317
+  },
+  {
+    "grado": "Transición",
+    "matricula": 2500681,
+    "pension": 2250612
+  },
+  {
+    "grado": "Primero",
+    "matricula": 2456756,
+    "pension": 2211081
+  },
+  {
+    "grado": "Segundo",
+    "matricula": 2447762,
+    "pension": 2202986
+  },
+  {
+    "grado": "Tercero",
+    "matricula": 2390874,
+    "pension": 2151787
+  },
+  {
+    "grado": "Cuarto",
+    "matricula": 2308870,
+    "pension": 2077983
+  },
+  {
+    "grado": "Quinto",
+    "matricula": 2312122,
+    "pension": 2080909
+  },
+  {
+    "grado": "Sexto",
+    "matricula": 2284030,
+    "pension": 2055627
+  },
+  {
+    "grado": "Séptimo",
+    "matricula": 2301267,
+    "pension": 2071141
+  },
+  {
+    "grado": "Octavo",
+    "matricula": 2343638,
+    "pension": 2109272
+  },
+  {
+    "grado": "Noveno",
+    "matricula": 2329619,
+    "pension": 2096656
+  },
+  {
+    "grado": "Décimo",
+    "matricula": 2288253,
+    "pension": 2059427
+  },
+  {
+    "grado": "Undécimo",
+    "matricula": 2310468,
+    "pension": 2079420
+  }
+]

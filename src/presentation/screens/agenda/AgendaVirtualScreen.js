@@ -146,6 +146,7 @@ const AgendaVirtualScreen = ({ navigation }) => {
   const [selectedDaySchool, setSelectedDaySchool] = useState(null);
   const [switchValue, setSwitchValue] = useState(false);
   const [dateCheck, setDateCheck] = useState(null);
+  const [savingCheck, setSavingCheck] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [studentInfo, setStudentInfo] = useState(null);
   const [worksList, setWorksList] = useState(null);
@@ -236,6 +237,34 @@ const AgendaVirtualScreen = ({ navigation }) => {
     if (!checkDaysData) return null;
     const [, month, day] = dateString.split('-');
     return checkDaysData[month]?.[day] || null;
+  };
+
+  const handleSwitchChange = async (value) => {
+    if (!value || switchValue) return;
+    const [, month, day] = selectedDate.split('-');
+    try {
+      setSavingCheck(true);
+      const data = await apiClient.post(API_URLS.WORK_CLASS, {
+        base: 'caa',
+        param: 'saveCheckDay',
+        day: day.padStart(2, '0'),
+        month: month.padStart(2, '0'),
+      });
+      if (data.code === 200) {
+        setSwitchValue(true);
+        // Refrescar checkDaysData para reflejar el nuevo marcado
+        const updated = await apiClient.post(API_URLS.WORK_CLASS, { base: 'caa', param: 'getCheckDays', id_student: 'false' });
+        if (updated.code === 200) {
+          setCheckDaysData(updated.response);
+          const checkDayData = updated.response[month]?.[day] || null;
+          setDateCheck(checkDayData?.date_check || null);
+        }
+      }
+    } catch (e) {
+      console.error('Error al guardar revisión:', e);
+    } finally {
+      setSavingCheck(false);
+    }
   };
 
   const getWorksForDate = (dateString) => {
@@ -362,7 +391,9 @@ const AgendaVirtualScreen = ({ navigation }) => {
                 <Text variant="bodyMedium" style={agendaStyles.dateCheckText}>
                   {dateCheck ? `Revisado el ${dateCheck}` : 'Sin revisión'}
                 </Text>
-                <Switch value={switchValue} onValueChange={(value) => { if (value === true) setSwitchValue(value); }} color="#002c5d" />
+                {savingCheck
+                  ? <ActivityIndicator size={20} color="#002c5d" style={{ marginRight: 4 }} />
+                  : <Switch value={switchValue} onValueChange={handleSwitchChange} disabled={savingCheck} color="#002c5d" />}
               </View>
             </View>
           </View>

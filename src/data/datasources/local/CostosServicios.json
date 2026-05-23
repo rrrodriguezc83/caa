@@ -1,0 +1,42 @@
+[
+  {
+    "tipo_de_servicio": "TRANSPORTE",
+    "descripcion": "Tarifa única Bogotá",
+    "valor": 575111
+  },
+  {
+    "tipo_de_servicio": "TRANSPORTE",
+    "descripcion": "Chía corriente",
+    "valor": 656443
+  },
+  {
+    "tipo_de_servicio": "TRANSPORTE",
+    "descripcion": "Chía especial, Cota, Cajicá",
+    "valor": 769795
+  },
+  {
+    "tipo_de_servicio": "TRANSPORTE",
+    "descripcion": "La Calera",
+    "valor": 656443
+  },
+  {
+    "tipo_de_servicio": "TRANSPORTE",
+    "descripcion": "Doble ruta",
+    "valor": 778950
+  },
+  {
+    "tipo_de_servicio": "ALMUERZO",
+    "descripcion": "Preescolar, Primaria y Bachillerato",
+    "valor": 496262
+  },
+  {
+    "tipo_de_servicio": "MEDIAS NUEVES",
+    "descripcion": "Preescolar a 2° (mañana y tarde)",
+    "valor": 229952
+  },
+  {
+    "tipo_de_servicio": "MEDIAS NUEVES",
+    "descripcion": "Grados 3° a 5° (mañana)",
+    "valor": 203945
+  }
+]
