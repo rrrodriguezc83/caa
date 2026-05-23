@@ -9,7 +9,11 @@
       "Bash(./gradlew assembleRelease)",
       "Bash(./gradlew :app:createBundleReleaseJsAndAssets)",
       "Bash(npx react-native:*)",
-      "Bash(eas build:*)"
+      "Bash(eas build:*)",
+      "Bash(eas init:*)",
+      "Bash(eas build:view 980ac376-8eec-4d2a-a060-4594ce7bb840)",
+      "Bash(eas build:view 980ac376-8eec-4d2a-a060-4594ce7bb840 --json)",
+      "Bash(node -e \"const d=JSON.parse\\(require\\(''''fs''''\\).readFileSync\\(0,''''utf8''''\\)\\); console.log\\(JSON.stringify\\(d.error || d.buildPhases || d, null, 2\\)\\)\")"
     ]
   }
 }
