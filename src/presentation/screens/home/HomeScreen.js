@@ -13,7 +13,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import {
   Appbar, Text, ActivityIndicator, Card, Drawer, Snackbar, useTheme,
   Avatar, Divider, Button, List, Badge, IconButton,
@@ -176,6 +176,7 @@ const HomeScreen = ({ navigation }) => {
 
   const openDrawer = () => { setModalVisible(true); setDrawerVisible(true); };
   const closeDrawer = () => { setDrawerVisible(false); };
+  const toggleDrawer = () => { if (drawerVisible) { closeDrawer(); } else { openDrawer(); } };
 
   useEffect(() => {
     const pingAnimation = Animated.loop(Animated.sequence([
@@ -307,7 +308,7 @@ const HomeScreen = ({ navigation }) => {
   const nextSchoolDate = getNextSchoolDayDate(todayLocal);
   const daySchoolFromCalendar = findDaySchool(calendarData, nextSchoolDate);
   const weekdayDia = getWeekdayDiaForSchedule(nextSchoolDate);
-  
+
   console.log('daySchoolFromCalendar', daySchoolFromCalendar);
 
   let horarioNext = null;
@@ -369,11 +370,18 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top', 'left', 'right']}>
+    <AppScreenLayout navigation={navigation} activeRoute="Welcome">
       <StatusBar barStyle="dark-content" backgroundColor="#f8f6f6" />
 
       {/* Header Section */}
       <View style={styles.header}>
+        <IconButton
+          icon={drawerVisible ? 'close' : 'menu'}
+          size={28}
+          iconColor="#002c5d"
+          onPress={toggleDrawer}
+          style={styles.menuButton}
+        />
         <TouchableOpacity onPress={openDrawer} style={styles.headerLeft}>
           <View style={styles.profileContainer}>
             {userInfo?.FOTO && getImageUri(userInfo.FOTO) ? (
@@ -551,6 +559,13 @@ const HomeScreen = ({ navigation }) => {
           </TouchableWithoutFeedback>
           <Animated.View style={[styles.drawerContainer, { transform: [{ translateX: slideAnim }] }]}>
             <View style={styles.profileSection}>
+              <IconButton
+                icon="close"
+                size={24}
+                iconColor="#64748b"
+                onPress={closeDrawer}
+                style={styles.drawerCloseButton}
+              />
               <View style={styles.profileHeader}>
                 {userInfo?.FOTO && getImageUri(userInfo.FOTO) ? (
                   <Avatar.Image size={64} source={{ uri: getImageUri(userInfo.FOTO) }} style={styles.avatar} />
@@ -596,14 +611,15 @@ const HomeScreen = ({ navigation }) => {
 
       <Snackbar visible={snackbarVisible} onDismiss={() => setSnackbarVisible(false)} duration={3000}
         action={{ label: 'OK', onPress: () => setSnackbarVisible(false) }}>{snackbarMessage}</Snackbar>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 
 const styles = StyleSheet.create({
   mainContainer: { flex: 1, backgroundColor: '#f8f6f6' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(248, 246, 246, 0.95)', paddingHorizontal: 24, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(0, 44, 93, 0.1)' },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(248, 246, 246, 0.95)', paddingLeft: 8, paddingRight: 24, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(0, 44, 93, 0.1)' },
   headerLeft: { flex: 1 },
+  menuButton: { margin: 0 },
   profileContainer: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   headerAvatar: { width: 48, height: 48, borderRadius: 24, borderWidth: 2, borderColor: 'rgba(0, 44, 93, 0.2)' },
   headerAvatarPlaceholder: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#002c5d', borderWidth: 2, borderColor: 'rgba(0, 44, 93, 0.2)', alignItems: 'center', justifyContent: 'center' },
@@ -615,7 +631,7 @@ const styles = StyleSheet.create({
   loadingText: { marginTop: 16, color: '#002c5d' },
   content: { flex: 1, paddingHorizontal: 16, paddingTop: 24, paddingBottom: 24, backgroundColor: '#f8f6f6' },
   notificationsCard: { marginBottom: 24, backgroundColor: '#FFFFFF', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(0, 44, 93, 0.05)', overflow: 'hidden' },
-  /* Tarjeta “Upcoming events / Event Card 1” (Stitch AgendaVirtual-uniforme) */
+  /* Tarjeta "Upcoming events / Event Card 1" (Stitch AgendaVirtual-uniforme) */
   schoolDayCardWrap: {
     marginBottom: 24,
     borderRadius: 12,
@@ -708,7 +724,8 @@ const styles = StyleSheet.create({
   modalContainer: { flex: 1, flexDirection: 'row' },
   drawerOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)' },
   drawerContainer: { position: 'absolute', left: 0, top: 0, bottom: 0, width: width * 0.80, maxWidth: 320, backgroundColor: '#f8f6f6', shadowColor: '#000', shadowOffset: { width: 2, height: 0 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 8 },
-  profileSection: { paddingVertical: 24, paddingHorizontal: 16, backgroundColor: '#f8f6f6' },
+  profileSection: { paddingVertical: 24, paddingHorizontal: 16, backgroundColor: '#f8f6f6', position: 'relative' },
+  drawerCloseButton: { position: 'absolute', top: 8, right: 8, margin: 0, zIndex: 10 },
   profileHeader: { flexDirection: 'row', alignItems: 'center' },
   avatar: { backgroundColor: '#002c5d', borderWidth: 2, borderColor: 'rgba(0, 44, 93, 0.2)' },
   profileInfo: { marginLeft: 16, flex: 1 },
