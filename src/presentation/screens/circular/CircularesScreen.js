@@ -6,7 +6,7 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   Text,
@@ -57,14 +57,14 @@ const CircularesScreen = ({ navigation, route }) => {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation} activeRoute="Circulares">
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Circulares" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#002c5d" />
           <Text style={styles.loadingText}>Cargando circulares...</Text>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
@@ -81,7 +81,7 @@ const CircularesScreen = ({ navigation, route }) => {
   const filteredCirculares = getFilteredCirculares();
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation} activeRoute="Circulares">
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Circulares" onBack={() => navigation.goBack()} />
 
@@ -149,7 +149,7 @@ const CircularesScreen = ({ navigation, route }) => {
           )}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 
