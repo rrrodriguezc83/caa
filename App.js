@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PaperProvider, ActivityIndicator } from 'react-native-paper';
 import * as SplashScreen from 'expo-splash-screen';
 import {
@@ -16,12 +17,16 @@ import {
 import { theme } from './src/presentation/theme';
 import AppNavigator from './src/presentation/navigation/AppNavigator';
 import { container } from './src/di/container';
+import BottomNavBar from './src/presentation/components/common/BottomNavBar';
 
 // Mantener la splash screen visible mientras se cargan las fuentes
 SplashScreen.preventAutoHideAsync();
 
+const navigationRef = createNavigationContainerRef();
+
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
+  const [currentRouteName, setCurrentRouteName] = useState();
 
   // Cargar las fuentes Inter
   let [fontsLoaded, fontError] = useFonts({
@@ -64,11 +69,19 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-      <PaperProvider theme={theme}>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-      </PaperProvider>
+      <SafeAreaProvider>
+        <PaperProvider theme={theme}>
+          <NavigationContainer
+            ref={navigationRef}
+            onStateChange={() => setCurrentRouteName(navigationRef.getCurrentRoute()?.name)}
+          >
+            <AppNavigator />
+          </NavigationContainer>
+          {currentRouteName && currentRouteName !== 'Login' && (
+            <BottomNavBar navigation={navigationRef} activeRoute={currentRouteName} />
+          )}
+        </PaperProvider>
+      </SafeAreaProvider>
     </View>
   );
 }
