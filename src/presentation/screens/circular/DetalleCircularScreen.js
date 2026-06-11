@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import {
   Text,
   Card,
@@ -153,7 +153,7 @@ const DetalleCircularScreen = ({ navigation, route }) => {
 
   if (!circular) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalle Circular" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -163,26 +163,26 @@ const DetalleCircularScreen = ({ navigation, route }) => {
             </Card.Content>
           </Card>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalles Circular" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#002c5d" />
           <Text style={styles.loadingText}>Cargando contenido de la circular...</Text>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
   if (!circularContent) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalles Circular" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -192,7 +192,7 @@ const DetalleCircularScreen = ({ navigation, route }) => {
             </Card.Content>
           </Card>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
@@ -217,7 +217,7 @@ const DetalleCircularScreen = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Detalles Circular" onBack={() => navigation.goBack()} />
 
@@ -291,7 +291,7 @@ const DetalleCircularScreen = ({ navigation, route }) => {
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 
