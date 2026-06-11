@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import {
   Text,
   Card,
@@ -310,7 +310,7 @@ const AgendaVirtualScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={agendaStyles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation} activeRoute="AgendaVirtual">
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Agenda Virtual" onBack={() => navigation.goBack()} />
 
@@ -399,7 +399,7 @@ const AgendaVirtualScreen = ({ navigation }) => {
           </View>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 
