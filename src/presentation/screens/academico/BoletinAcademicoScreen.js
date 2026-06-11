@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -78,7 +78,7 @@ const BoletinAcademicoScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Boletín Académico" onBack={() => navigation.goBack()} />
 
@@ -124,7 +124,7 @@ const BoletinAcademicoScreen = ({ navigation }) => {
           <PdfViewer key={selectedPeriod.value} base64={pdfBase64} />
         )}
       </View>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 

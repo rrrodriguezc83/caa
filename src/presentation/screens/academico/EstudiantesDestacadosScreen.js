@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -78,7 +78,7 @@ const EstudiantesDestacadosScreen = ({ navigation }) => {
   const honorRollList = Object.values(groupedHonorRoll);
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Estudiantes Destacados" onBack={() => navigation.goBack()} />
 
@@ -187,7 +187,7 @@ const EstudiantesDestacadosScreen = ({ navigation }) => {
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 

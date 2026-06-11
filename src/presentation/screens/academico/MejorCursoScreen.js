@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -88,7 +88,7 @@ const MejorCursoScreen = ({ navigation }) => {
   const currentList = data?.[selectedPeriod.key] ?? [];
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Mejor Curso Valores y Acad." onBack={() => navigation.goBack()} />
 
@@ -145,7 +145,7 @@ const MejorCursoScreen = ({ navigation }) => {
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 
