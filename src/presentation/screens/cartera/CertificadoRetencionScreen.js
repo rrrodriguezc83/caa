@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { Text } from 'react-native-paper';
 import ScreenHeader from '../../components/common/ScreenHeader';
 import PdfViewer from '../../components/common/PdfViewer';
@@ -24,7 +24,7 @@ const CertificadoRetencionScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Certificado de Retención" onBack={() => navigation.goBack()} />
 
@@ -42,7 +42,7 @@ const CertificadoRetencionScreen = ({ navigation }) => {
           </View>
         )}
       </View>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 

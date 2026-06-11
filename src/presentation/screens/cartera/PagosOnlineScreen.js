@@ -8,7 +8,7 @@ import {
   Alert,
   Image,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -47,7 +47,7 @@ const openUrl = async (url) => {
 
 const PagosOnlineScreen = ({ navigation }) => {
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Pagos en Línea" onBack={() => navigation.goBack()} />
 
@@ -100,7 +100,7 @@ const PagosOnlineScreen = ({ navigation }) => {
           </Text>
         </View>
       </View>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 

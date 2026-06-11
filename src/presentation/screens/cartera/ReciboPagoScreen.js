@@ -5,7 +5,7 @@ import {
   StatusBar,
   ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { Text } from 'react-native-paper';
 import { apiClient } from '../../../data/datasources/remote/ApiClient';
 import { API_URLS } from '../../../shared/constants/apiRoutes';
@@ -61,7 +61,7 @@ const ReciboPagoScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Recibo de pago - Pensión" onBack={() => navigation.goBack()} />
 
@@ -84,7 +84,7 @@ const ReciboPagoScreen = ({ navigation }) => {
           </View>
         )}
       </View>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 
