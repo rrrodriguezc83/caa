@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -130,20 +130,20 @@ const EvaluacionesPeriodoScreen = ({ navigation }) => {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Evaluaciones Periodo" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#002c5d" />
           <Text style={styles.loadingText}>Cargando evaluaciones de periodo...</Text>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
   if (error) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Evaluaciones Periodo" onBack={() => navigation.goBack()} />
         <View style={styles.errorContainer}>
@@ -151,12 +151,12 @@ const EvaluacionesPeriodoScreen = ({ navigation }) => {
           <Text style={styles.errorTitle}>Error</Text>
           <Text style={styles.errorText}>{error}</Text>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Evaluaciones Periodo" onBack={() => navigation.goBack()} />
 
@@ -224,7 +224,7 @@ const EvaluacionesPeriodoScreen = ({ navigation }) => {
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 

@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { Text, Card, ActivityIndicator, Avatar } from 'react-native-paper';
 import RenderHtml from 'react-native-render-html';
 import { container } from '../../../di/container';
@@ -150,7 +150,7 @@ const ComunicadoDiagnosticaScreen = ({ navigation, route }) => {
 
   if (!diagnostica) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Comunicado Diagnóstica" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -162,26 +162,26 @@ const ComunicadoDiagnosticaScreen = ({ navigation, route }) => {
             </Card.Content>
           </Card>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Comunicado Diagnóstica" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#002c5d" />
           <Text style={styles.loadingText}>Cargando comunicado...</Text>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
   if (error || !alertData) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Comunicado Diagnóstica" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -193,12 +193,12 @@ const ComunicadoDiagnosticaScreen = ({ navigation, route }) => {
             </Card.Content>
           </Card>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Comunicado Diagnóstica" onBack={() => navigation.goBack()} />
 
@@ -265,7 +265,7 @@ const ComunicadoDiagnosticaScreen = ({ navigation, route }) => {
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 
