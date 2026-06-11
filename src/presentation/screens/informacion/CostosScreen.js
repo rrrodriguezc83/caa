@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { Text } from 'react-native-paper';
 import ScreenHeader from '../../components/common/ScreenHeader';
 import costosData from '../../../data/datasources/local/CostosEducativos.json';
@@ -21,7 +21,7 @@ const CostosScreen = ({ navigation }) => {
   const serviciosGroups = groupByService(serviciosData);
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Costos" onBack={() => navigation.goBack()} />
 
@@ -77,7 +77,7 @@ const CostosScreen = ({ navigation }) => {
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 

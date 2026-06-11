@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import ScreenHeader from '../../components/common/ScreenHeader';
 import PdfViewer from '../../components/common/PdfViewer';
 
@@ -8,13 +8,13 @@ const PDF_URL = 'https://www.comunidadvirtualcaa.co/Information/views/documento/
 
 const PolizaSeguroScreen = ({ navigation }) => {
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Póliza de Seguro" onBack={() => navigation.goBack()} />
       <View style={styles.content}>
         <PdfViewer uri={PDF_URL} />
       </View>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 
