@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AppScreenLayout from '../../components/common/AppScreenLayout';
 import {
   Text,
   Card,
@@ -95,7 +95,7 @@ const DetalleEncuestaScreen = ({ navigation, route }) => {
 
   if (!numSurvey) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalle Encuesta" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -107,26 +107,26 @@ const DetalleEncuestaScreen = ({ navigation, route }) => {
             </Card.Content>
           </Card>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalle Encuesta" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#002c5d" />
           <Text style={styles.loadingText}>Cargando encuesta...</Text>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
   if (!encuesta) {
     return (
-      <SafeAreaView style={styles.mainContainer} edges={['top']}>
+      <AppScreenLayout navigation={navigation}>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalle Encuesta" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -138,7 +138,7 @@ const DetalleEncuestaScreen = ({ navigation, route }) => {
             </Card.Content>
           </Card>
         </View>
-      </SafeAreaView>
+      </AppScreenLayout>
     );
   }
 
@@ -160,7 +160,7 @@ const DetalleEncuestaScreen = ({ navigation, route }) => {
     : formatFechaEncuesta(encuesta.fecha_fin);
 
   return (
-    <SafeAreaView style={styles.mainContainer} edges={['top']}>
+    <AppScreenLayout navigation={navigation}>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Detalle Encuesta" onBack={() => navigation.goBack()} />
 
@@ -209,7 +209,7 @@ const DetalleEncuestaScreen = ({ navigation, route }) => {
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </AppScreenLayout>
   );
 };
 
