@@ -47,7 +47,7 @@ const CarteraScreen = ({ navigation }) => {
   };
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Cartera" onBack={() => navigation.goBack()} />
       <ScrollView

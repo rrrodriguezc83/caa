@@ -61,7 +61,7 @@ const ReciboPagoScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Recibo de pago - Pensión" onBack={() => navigation.goBack()} />
 

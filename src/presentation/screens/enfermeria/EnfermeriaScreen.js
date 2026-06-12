@@ -143,7 +143,7 @@ const EnfermeriaScreen = ({ navigation }) => {
 
   if (loading) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Enfermería" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
@@ -155,7 +155,7 @@ const EnfermeriaScreen = ({ navigation }) => {
   }
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Enfermería" onBack={() => navigation.goBack()} />
 
