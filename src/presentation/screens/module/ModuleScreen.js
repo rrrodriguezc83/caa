@@ -9,7 +9,7 @@ const ModuleScreen = ({ route, navigation }) => {
   const { moduleName, moduleId } = route.params || {};
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title={moduleName || 'Módulo'} onBack={() => navigation.goBack()} />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>

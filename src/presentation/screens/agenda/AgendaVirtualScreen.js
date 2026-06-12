@@ -310,7 +310,7 @@ const AgendaVirtualScreen = ({ navigation }) => {
   };
 
   return (
-    <AppScreenLayout navigation={navigation} activeRoute="AgendaVirtual">
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Agenda Virtual" onBack={() => navigation.goBack()} />
 

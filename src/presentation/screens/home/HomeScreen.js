@@ -370,7 +370,7 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <AppScreenLayout navigation={navigation} activeRoute="Welcome">
+    <AppScreenLayout>
       <StatusBar barStyle="dark-content" backgroundColor="#f8f6f6" />
 
       {/* Header Section */}
