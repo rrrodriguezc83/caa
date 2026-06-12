@@ -41,6 +41,8 @@ const {
 
 const { width } = Dimensions.get('window');
 
+const inactiveMain = ['1', '5', '13'];
+
 const HomeScreen = ({ navigation }) => {
   const theme = useTheme();
   const { width: windowWidth } = useWindowDimensions();
@@ -246,7 +248,7 @@ const HomeScreen = ({ navigation }) => {
 
   const handleMenuPress = (item, label) => {
     setActiveDrawerItem(item); closeDrawer();
-    if (item === 'home') { showSnackbar('Estás en Home'); return; }
+    
     const labelLower = (label || '').toLowerCase().trim();
     const screenMap = {
       'agenda virtual': 'AgendaVirtual',
@@ -401,6 +403,30 @@ const HomeScreen = ({ navigation }) => {
 
       {/* Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {showSchoolDayCard && (
+          <View style={styles.schoolDayCardWrap}>
+            <View style={styles.schoolDayBlobTop} pointerEvents="none" />
+            <View style={styles.schoolDayBlobBottom} pointerEvents="none" />
+            <View style={styles.schoolDayCardInner}>
+              <View style={styles.schoolDayCardRow}>
+                <View style={styles.schoolDayCardLeft}>
+                  <View style={styles.schoolDayBadgeRow}>
+                    <Icon name="calendar-today" size={18} color="rgba(255,255,255,0.8)" />
+                    <Text style={styles.schoolDayBadgeLabel}>
+                      {`SIGUIENTE: DÍA ${diaLabel}`}
+                    </Text>
+                  </View>
+                  <Text style={styles.schoolDayDateLine}>{nextSchoolDateFormatted}</Text>
+                  <Text style={styles.schoolDayUniformTitle}>{uniformeNext}</Text>
+                </View>
+                <View style={styles.schoolDayDecorIconWrap} pointerEvents="none">
+                  <Icon name={uniformDecorIcon} size={70} color="#FFFFFF" />
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+
         {/* Card de Notificaciones */}
         {pendingNotifys.length > 0 && (
           <Card style={styles.notificationsCard} elevation={1}>
@@ -440,30 +466,6 @@ const HomeScreen = ({ navigation }) => {
               ))}
             </View>
           </Card>
-        )}
-
-        {showSchoolDayCard && (
-          <View style={styles.schoolDayCardWrap}>
-            <View style={styles.schoolDayBlobTop} pointerEvents="none" />
-            <View style={styles.schoolDayBlobBottom} pointerEvents="none" />
-            <View style={styles.schoolDayCardInner}>
-              <View style={styles.schoolDayCardRow}>
-                <View style={styles.schoolDayCardLeft}>
-                  <View style={styles.schoolDayBadgeRow}>
-                    <Icon name="calendar-today" size={18} color="rgba(255,255,255,0.8)" />
-                    <Text style={styles.schoolDayBadgeLabel}>
-                      {`SIGUIENTE: DÍA ${diaLabel}`}
-                    </Text>
-                  </View>
-                  <Text style={styles.schoolDayDateLine}>{nextSchoolDateFormatted}</Text>
-                  <Text style={styles.schoolDayUniformTitle}>{uniformeNext}</Text>
-                </View>
-                <View style={styles.schoolDayDecorIconWrap} pointerEvents="none">
-                  <Icon name={uniformDecorIcon} size={70} color="#FFFFFF" />
-                </View>
-              </View>
-            </View>
-          </View>
         )}
 
         {/* Card Works and Reminders */}
@@ -586,7 +588,7 @@ const HomeScreen = ({ navigation }) => {
                   style={activeDrawerItem === 'home' ? styles.activeDrawerItem : styles.inactiveDrawerItem}
                   labelStyle={activeDrawerItem === 'home' ? styles.activeDrawerLabel : styles.inactiveDrawerLabel}
                   theme={{ colors: { onSurfaceVariant: activeDrawerItem === 'home' ? '#002c5d' : '#94a3b8', onSecondaryContainer: activeDrawerItem === 'home' ? '#002c5d' : '#94a3b8', primary: '#002c5d' } }} />
-                {mainContent && Array.isArray(mainContent) && mainContent.map((item, index) => {
+                {mainContent && Array.isArray(mainContent) && mainContent.filter((item) => !inactiveMain.includes(item.id)).map((item, index) => {
                   const itemId = item.id || item.ID || `item-${index}`;
                   const isActive = activeDrawerItem === itemId;
                   return (
