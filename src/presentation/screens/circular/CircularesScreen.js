@@ -57,7 +57,7 @@ const CircularesScreen = ({ navigation, route }) => {
 
   if (loading) {
     return (
-      <AppScreenLayout navigation={navigation} activeRoute="Circulares">
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Circulares" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
@@ -81,7 +81,7 @@ const CircularesScreen = ({ navigation, route }) => {
   const filteredCirculares = getFilteredCirculares();
 
   return (
-    <AppScreenLayout navigation={navigation} activeRoute="Circulares">
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Circulares" onBack={() => navigation.goBack()} />
 

@@ -95,7 +95,7 @@ const DetalleEncuestaScreen = ({ navigation, route }) => {
 
   if (!numSurvey) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalle Encuesta" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -113,7 +113,7 @@ const DetalleEncuestaScreen = ({ navigation, route }) => {
 
   if (loading) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalle Encuesta" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
@@ -126,7 +126,7 @@ const DetalleEncuestaScreen = ({ navigation, route }) => {
 
   if (!encuesta) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalle Encuesta" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -160,7 +160,7 @@ const DetalleEncuestaScreen = ({ navigation, route }) => {
     : formatFechaEncuesta(encuesta.fecha_fin);
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Detalle Encuesta" onBack={() => navigation.goBack()} />
 

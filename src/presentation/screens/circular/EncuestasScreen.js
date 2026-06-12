@@ -54,7 +54,7 @@ const EncuestasScreen = ({ navigation }) => {
 
   if (loading) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Encuestas" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
@@ -78,7 +78,7 @@ const EncuestasScreen = ({ navigation }) => {
   const filtered = getFiltered();
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Encuestas" onBack={() => navigation.goBack()} />
 

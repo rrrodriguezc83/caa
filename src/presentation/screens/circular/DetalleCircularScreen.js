@@ -153,7 +153,7 @@ const DetalleCircularScreen = ({ navigation, route }) => {
 
   if (!circular) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalle Circular" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -169,7 +169,7 @@ const DetalleCircularScreen = ({ navigation, route }) => {
 
   if (loading) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalles Circular" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
@@ -182,7 +182,7 @@ const DetalleCircularScreen = ({ navigation, route }) => {
 
   if (!circularContent) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Detalles Circular" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -217,7 +217,7 @@ const DetalleCircularScreen = ({ navigation, route }) => {
   };
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Detalles Circular" onBack={() => navigation.goBack()} />
 
