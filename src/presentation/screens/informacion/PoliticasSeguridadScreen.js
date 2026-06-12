@@ -8,7 +8,7 @@ const PDF_URL = 'https://www.comunidadvirtualcaa.co/Information/views/Politica_d
 
 const PoliticasSeguridadScreen = ({ navigation }) => {
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Políticas de Seguridad" onBack={() => navigation.goBack()} />
       <View style={styles.content}>

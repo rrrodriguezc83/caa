@@ -87,7 +87,7 @@ const AtencionPsicologicaScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Atención Psicológica" onBack={() => navigation.goBack()} />
 

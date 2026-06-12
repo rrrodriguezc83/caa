@@ -21,7 +21,7 @@ const CostosScreen = ({ navigation }) => {
   const serviciosGroups = groupByService(serviciosData);
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Costos" onBack={() => navigation.goBack()} />
 
