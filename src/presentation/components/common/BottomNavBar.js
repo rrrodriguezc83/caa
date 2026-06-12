@@ -4,8 +4,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const NAV_ITEMS = [
-  { route: 'Welcome', label: 'Inicio', icon: 'home' },
   { route: 'AgendaVirtual', label: 'Agenda Virtual', icon: 'laptop' },
+  { route: 'Welcome', label: 'Inicio', icon: 'home' },
   { route: 'Circulares', label: 'Circulares', icon: 'email-newsletter' },
 ];
 
