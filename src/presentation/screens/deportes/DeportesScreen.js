@@ -7,7 +7,7 @@ import ScreenHeader from '../../components/common/ScreenHeader';
 
 const DeportesScreen = ({ navigation }) => {
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Deportes" onBack={() => navigation.goBack()} />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
