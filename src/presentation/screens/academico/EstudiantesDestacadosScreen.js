@@ -78,7 +78,7 @@ const EstudiantesDestacadosScreen = ({ navigation }) => {
   const honorRollList = Object.values(groupedHonorRoll);
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Estudiantes Destacados" onBack={() => navigation.goBack()} />
 

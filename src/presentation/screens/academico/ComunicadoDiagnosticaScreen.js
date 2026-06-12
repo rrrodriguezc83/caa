@@ -150,7 +150,7 @@ const ComunicadoDiagnosticaScreen = ({ navigation, route }) => {
 
   if (!diagnostica) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Comunicado Diagnóstica" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -168,7 +168,7 @@ const ComunicadoDiagnosticaScreen = ({ navigation, route }) => {
 
   if (loading) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Comunicado Diagnóstica" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
@@ -181,7 +181,7 @@ const ComunicadoDiagnosticaScreen = ({ navigation, route }) => {
 
   if (error || !alertData) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Comunicado Diagnóstica" onBack={() => navigation.goBack()} />
         <View style={styles.content}>
@@ -198,7 +198,7 @@ const ComunicadoDiagnosticaScreen = ({ navigation, route }) => {
   }
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Comunicado Diagnóstica" onBack={() => navigation.goBack()} />
 

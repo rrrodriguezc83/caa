@@ -132,7 +132,7 @@ const FechasDiagnosticasScreen = ({ navigation }) => {
 
   if (loading) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Fechas Diagnósticas" onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
@@ -145,7 +145,7 @@ const FechasDiagnosticasScreen = ({ navigation }) => {
 
   if (error) {
     return (
-      <AppScreenLayout navigation={navigation}>
+      <AppScreenLayout>
         <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
         <ScreenHeader title="Fechas Diagnósticas" onBack={() => navigation.goBack()} />
         <View style={styles.errorContainer}>
@@ -158,7 +158,7 @@ const FechasDiagnosticasScreen = ({ navigation }) => {
   }
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Fechas Diagnósticas" onBack={() => navigation.goBack()} />
 

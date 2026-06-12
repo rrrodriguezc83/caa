@@ -78,7 +78,7 @@ const BoletinAcademicoScreen = ({ navigation }) => {
   };
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Boletín Académico" onBack={() => navigation.goBack()} />
 

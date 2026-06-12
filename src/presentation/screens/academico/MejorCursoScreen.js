@@ -88,7 +88,7 @@ const MejorCursoScreen = ({ navigation }) => {
   const currentList = data?.[selectedPeriod.key] ?? [];
 
   return (
-    <AppScreenLayout navigation={navigation}>
+    <AppScreenLayout>
       <StatusBar barStyle="light-content" backgroundColor="#002c5d" />
       <ScreenHeader title="Mejor Curso Valores y Acad." onBack={() => navigation.goBack()} />
 
