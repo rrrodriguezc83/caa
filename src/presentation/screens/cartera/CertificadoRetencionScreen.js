@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import ScreenHeader from '../../components/common/ScreenHeader';
 import PdfViewer from '../../components/common/PdfViewer';
 import { apiClient } from '../../../data/datasources/remote/ApiClient';
@@ -42,6 +42,13 @@ const CertificadoRetencionScreen = ({ navigation }) => {
           </View>
         )}
       </View>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -60,6 +67,7 @@ const styles = StyleSheet.create({
   },
   loadingText: { fontSize: 14, color: '#71717a', textAlign: 'center' },
   errorText: { fontSize: 14, color: '#64748b', textAlign: 'center' },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default CertificadoRetencionScreen;

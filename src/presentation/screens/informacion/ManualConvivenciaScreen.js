@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, StatusBar } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
+import { FAB } from 'react-native-paper';
 import ScreenHeader from '../../components/common/ScreenHeader';
 import PdfViewer from '../../components/common/PdfViewer';
 
@@ -14,6 +15,13 @@ const ManualConvivenciaScreen = ({ navigation }) => {
       <View style={styles.content}>
         <PdfViewer uri={PDF_URL} />
       </View>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -21,6 +29,7 @@ const ManualConvivenciaScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainContainer: { flex: 1, backgroundColor: '#f8f6f6' },
   content: { flex: 1 },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default ManualConvivenciaScreen;

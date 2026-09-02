@@ -13,7 +13,18 @@
       "Bash(eas init:*)",
       "Bash(eas build:view 980ac376-8eec-4d2a-a060-4594ce7bb840)",
       "Bash(eas build:view 980ac376-8eec-4d2a-a060-4594ce7bb840 --json)",
-      "Bash(node -e \"const d=JSON.parse\\(require\\(''''fs''''\\).readFileSync\\(0,''''utf8''''\\)\\); console.log\\(JSON.stringify\\(d.error || d.buildPhases || d, null, 2\\)\\)\")"
+      "Bash(node -e \"const d=JSON.parse\\(require\\(''''fs''''\\).readFileSync\\(0,''''utf8''''\\)\\); console.log\\(JSON.stringify\\(d.error || d.buildPhases || d, null, 2\\)\\)\")",
+      "Bash(git *)",
+      "Bash(bash /c/Users/rorro/.claude/statusline-command.sh)",
+      "Bash(npm list *)",
+      "Bash(git show *)",
+      "PowerShell(cd D:\\\\git\\\\caa; \\(Get-Content src/presentation/screens/academico/AcademicoScreen.js | Select-String \"import AppScreenLayout\" | Measure-Object\\).Count)",
+      "PowerShell(cd D:\\\\git\\\\caa; \\(Get-Content src/presentation/screens/academico/BoletinAcademicoScreen.js | Select-String \"SafeAreaView\" | Measure-Object\\).Count)",
+      "PowerShell(cd D:\\\\git\\\\caa; \\(Get-Content src/presentation/screens/academico/EstudiantesDestacadosScreen.js | Select-String \"import AppScreenLayout\" | Measure-Object\\).Count)",
+      "PowerShell(cd D:\\\\git\\\\caa; \\(Get-Content src/presentation/screens/academico/MejorCursoScreen.js | Select-String \"SafeAreaView\" | Measure-Object\\).Count)",
+      "PowerShell(cd D:\\\\git\\\\caa; \\(Get-Content src/presentation/screens/academico/MejorCursoScreen.js | Select-String \"<AppScreenLayout\" | Measure-Object\\).Count)",
+      "PowerShell(Set-Location *)",
+      "Bash(grep -rl \"fab: { position: 'absolute', left: 16, bottom: 16\" src/presentation/screens/)"
     ]
   }
 }

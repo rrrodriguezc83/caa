@@ -56,8 +56,6 @@ const LoginScreen = ({ navigation }) => {
       const stored = await biometricRepository.hasStoredCredentials();
       setBiometricAvailable(available);
       setHasCredentials(stored);
-      console.log('Biometría disponible:', available);
-      console.log('Credenciales guardadas:', stored);
     } catch (error) {
       console.error('Error verificando biometría:', error);
     }
@@ -72,7 +70,6 @@ const LoginScreen = ({ navigation }) => {
         pendingCredentials.profile
       );
       if (saved) {
-        console.log('Credenciales guardadas para uso biométrico');
         setHasCredentials(true);
         showSnackbar('Autenticación biométrica habilitada');
       }
@@ -110,7 +107,6 @@ const LoginScreen = ({ navigation }) => {
       if (response.code === 200 && response.response) {
         const isLoginSuccessful = response.response.data && response.response.data !== false;
         if (isLoginSuccessful) {
-          console.log('Login biométrico exitoso');
           navigation.replace('Welcome');
         } else {
           showSnackbar('Las credenciales guardadas ya no son válidas');
@@ -142,7 +138,6 @@ const LoginScreen = ({ navigation }) => {
       if (response.code === 200 && response.response) {
         const isLoginSuccessful = response.response.data && response.response.data !== false;
         if (isLoginSuccessful) {
-          console.log('Login exitoso. Data recibida:', response.response.data);
           if (biometricAvailable && !hasCredentials) {
             setPendingCredentials({ username, password, profile: selectedProfile });
             setBiometricDialogVisible(true);

@@ -11,21 +11,15 @@ export class NotificationRepositoryImpl extends NotificationRepository {
   }
 
   async getNotifications() {
-    console.log('=== getNotifys ===');
-
     const data = await this.apiClient.post(API_URLS.MAIN, {
       base: 'caa',
       param: 'getNotifys',
     });
 
-    console.log('Notificaciones recibidas');
     return data;
   }
 
   async markAsRead(codigo) {
-    console.log('=== markAsRead (submit_nivel_satisfactorio) ===');
-    console.log('  - codigo:', codigo);
-
     const data = await this.apiClient.post(API_URLS.COMUNICACIONES, {
       param: 'submit_nivel_satisfactorio',
       base: 'caa',
@@ -34,7 +28,6 @@ export class NotificationRepositoryImpl extends NotificationRepository {
       coment: 'null',
     });
 
-    console.log('Respuesta markAsRead:', data);
     return data;
   }
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -58,6 +58,13 @@ const MenuEscolarScreen = ({ navigation }) => {
           <PdfViewer uri={pdfUrl} cookie={apiClient.sessionCookie} />
         )}
       </View>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -74,6 +81,7 @@ const styles = StyleSheet.create({
   },
   loadingText: { fontSize: 14, color: '#64748b' },
   errorText: { fontSize: 14, color: '#64748b', textAlign: 'center' },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default MenuEscolarScreen;

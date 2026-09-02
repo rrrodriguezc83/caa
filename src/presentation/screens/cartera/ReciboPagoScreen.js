@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import { apiClient } from '../../../data/datasources/remote/ApiClient';
 import { API_URLS } from '../../../shared/constants/apiRoutes';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -24,13 +24,10 @@ const ReciboPagoScreen = ({ navigation }) => {
 
     const run = async () => {
       try {
-        console.log('=== Recibo de pago (getBill) ===');
         const data = await apiClient.post(API_URLS.PORTFOLIO, {
           base: 'comunidad',
           param: 'getBill',
         });
-        // El usuario pidió imprimir la respuesta del servicio en consola.
-        console.log('Respuesta getBill:', data);
 
         if (!isMounted) return;
 
@@ -84,6 +81,13 @@ const ReciboPagoScreen = ({ navigation }) => {
           </View>
         )}
       </View>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -102,6 +106,7 @@ const styles = StyleSheet.create({
   loadingText: { marginTop: 12, fontSize: 14, color: '#71717a', textAlign: 'center' },
   errorText: { fontSize: 16, color: '#ef4444', fontWeight: '600', textAlign: 'center' },
   errorDetails: { marginTop: 8, fontSize: 12, color: '#991b1b' },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default ReciboPagoScreen;

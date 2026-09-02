@@ -12,7 +12,6 @@ class ApiClient {
    * Limpia la sesión y las cookies almacenadas
    */
   clearSession() {
-    console.log('=== Limpiando sesión y cookies ===');
     this.sessionCookie = null;
 
     if (Platform.OS === 'web') {
@@ -24,15 +23,10 @@ class ApiClient {
         });
         document.cookie = 'PHPSESSID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.comunidadvirtualcaa.co';
         document.cookie = 'PHPSESSID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        console.log('Cookies del navegador limpiadas');
       } catch (error) {
-        console.log('No se pudieron limpiar las cookies del navegador:', error.message);
+        // no-op
       }
-    } else {
-      console.log('Cookies en memoria limpiadas para móvil');
     }
-
-    console.log('Sesión limpiada correctamente');
   }
 
   /**
@@ -70,7 +64,6 @@ class ApiClient {
           const phpSessionMatch = setCookie.match(/PHPSESSID=([^;]+)/);
           if (phpSessionMatch) {
             this.sessionCookie = phpSessionMatch[1];
-            console.log('PHPSESSID capturado:', this.sessionCookie);
           }
         }
       }

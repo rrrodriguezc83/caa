@@ -19,6 +19,7 @@ import {
   Avatar,
   Badge,
   IconButton,
+  FAB,
 } from 'react-native-paper';
 import { useRoute } from '@react-navigation/native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
@@ -399,6 +400,13 @@ const AgendaVirtualScreen = ({ navigation }) => {
           </View>
         )}
       </ScrollView>
+
+      <FAB
+        icon="arrow-left"
+        style={agendaStyles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -438,6 +446,7 @@ const agendaStyles = StyleSheet.create({
   loadingText: { marginTop: 16, color: '#64748b', fontSize: 14 },
   footerContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flex: 1 },
   dateCheckText: { color: '#64748b', fontSize: 14, flex: 1, marginRight: 8, fontStyle: 'italic' },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default AgendaVirtualScreen;

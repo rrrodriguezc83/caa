@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
 import { container } from '../../../di/container';
@@ -187,6 +187,13 @@ const EstudiantesDestacadosScreen = ({ navigation }) => {
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -301,6 +308,7 @@ const styles = StyleSheet.create({
   },
   subjectTagText: { fontSize: 11, color: '#002c5d', fontWeight: '600' },
   bottomSpacer: { height: 24 },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default EstudiantesDestacadosScreen;

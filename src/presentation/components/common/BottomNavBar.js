@@ -2,18 +2,33 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { container } from '../../../di/container';
+import { clearSession } from '../../../shared/session';
+
+const { authRepository } = container;
 
 const NAV_ITEMS = [
-  { route: 'AgendaVirtual', label: 'Agenda Virtual', icon: 'laptop' },
   { route: 'Welcome', label: 'Inicio', icon: 'home' },
+  { route: 'AgendaVirtual', label: 'Agenda Virtual', icon: 'laptop' },
   { route: 'Circulares', label: 'Circulares', icon: 'email-newsletter' },
 ];
 
 const ACTIVE_COLOR = '#002c5d';
 const INACTIVE_COLOR = '#94a3b8';
+const LOGOUT_COLOR = '#dc2626';
 
 const BottomNavBar = ({ navigation, activeRoute }) => {
   const insets = useSafeAreaInsets();
+
+  const handleLogout = async () => {
+    try {
+      await authRepository.logout();
+      clearSession();
+      navigation.resetRoot({ index: 0, routes: [{ name: 'Login' }] });
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  };
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
@@ -32,6 +47,14 @@ const BottomNavBar = ({ navigation, activeRoute }) => {
           </TouchableOpacity>
         );
       })}
+      <TouchableOpacity
+        style={styles.item}
+        onPress={handleLogout}
+        activeOpacity={0.7}
+      >
+        <Icon name="logout" size={24} color={LOGOUT_COLOR} />
+        <Text style={[styles.label, { color: LOGOUT_COLOR }]} numberOfLines={1}>Cerrar sesión</Text>
+      </TouchableOpacity>
     </View>
   );
 };

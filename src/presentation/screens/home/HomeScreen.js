@@ -1,30 +1,26 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   StyleSheet,
-  Modal,
-  Dimensions,
   StatusBar,
   Animated,
-  TouchableWithoutFeedback,
   TouchableOpacity,
   Image,
   ScrollView,
   useWindowDimensions,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
 import {
-  Appbar, Text, ActivityIndicator, Card, Drawer, Snackbar, useTheme,
-  Avatar, Divider, Button, List, Badge, IconButton,
+  Text, ActivityIndicator, Card, Snackbar, useTheme,
+  Avatar, IconButton,
 } from 'react-native-paper';
 import RenderHTML from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { container } from '../../../di/container';
-import { setSession, clearSession } from '../../../shared/session';
+import { setSession } from '../../../shared/session';
 import { apiClient } from '../../../data/datasources/remote/ApiClient';
 import { API_URLS } from '../../../shared/constants/apiRoutes';
-import { toCapitalCase, capitalizeFirst, transformTextToHtml, getImageUri } from '../../../shared/utils/textHelpers';
+import { capitalizeFirst, transformTextToHtml, getImageUri } from '../../../shared/utils/textHelpers';
 import {
   getTodayLocal,
   getNextSchoolDayDate,
@@ -35,11 +31,9 @@ import {
 import { getScheduleForCourse } from '../../../data/datasources/remote/firebaseScheduleService';
 
 const {
-  authRepository, userRepository, studentRepository,
+  userRepository, studentRepository,
   circularRepository, notificationRepository,
 } = container;
-
-const { width } = Dimensions.get('window');
 
 const inactiveMain = ['1', '5', '13'];
 
@@ -54,11 +48,8 @@ const HomeScreen = ({ navigation }) => {
   const [notificationsCardExpanded, setNotificationsCardExpanded] = useState(false);
   const [circulares, setCirculares] = useState([]);
   const [pendingNotifys, setPendingNotifys] = useState([]);
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [activeDrawerItem, setActiveDrawerItem] = useState('home');
   const [studentInfo, setStudentInfo] = useState(null);
   const [worksList, setWorksList] = useState(null);
   const [remindersList, setRemindersList] = useState(null);
@@ -68,8 +59,6 @@ const HomeScreen = ({ navigation }) => {
   const [expandedTomorrowItems, setExpandedTomorrowItems] = useState({});
   const [otrosExpanded, setOtrosExpanded] = useState(false);
 
-  const slideAnim = useRef(new Animated.Value(-300)).current;
-  const overlayOpacity = useRef(new Animated.Value(0)).current;
   const badgePingAnim = useRef(new Animated.Value(1)).current;
 
   const showSnackbar = (message) => { setSnackbarMessage(message); setSnackbarVisible(true); };
@@ -176,10 +165,6 @@ const HomeScreen = ({ navigation }) => {
     } catch (error) { console.error('Error al procesar enterado:', error); showSnackbar('Error al procesar la notificación'); }
   };
 
-  const openDrawer = () => { setModalVisible(true); setDrawerVisible(true); };
-  const closeDrawer = () => { setDrawerVisible(false); };
-  const toggleDrawer = () => { if (drawerVisible) { closeDrawer(); } else { openDrawer(); } };
-
   useEffect(() => {
     const pingAnimation = Animated.loop(Animated.sequence([
       Animated.timing(badgePingAnim, { toValue: 2, duration: 1000, useNativeDriver: true }),
@@ -188,21 +173,6 @@ const HomeScreen = ({ navigation }) => {
     if (pendingNotifys.length > 0) pingAnimation.start();
     return () => pingAnimation.stop();
   }, [pendingNotifys.length, badgePingAnim]);
-
-  useEffect(() => {
-    if (drawerVisible) {
-      slideAnim.setValue(-300); overlayOpacity.setValue(0);
-      Animated.parallel([
-        Animated.timing(slideAnim, { toValue: 0, duration: 250, useNativeDriver: true }),
-        Animated.timing(overlayOpacity, { toValue: 1, duration: 250, useNativeDriver: true }),
-      ]).start();
-    } else if (modalVisible) {
-      Animated.parallel([
-        Animated.timing(slideAnim, { toValue: -300, duration: 200, useNativeDriver: true }),
-        Animated.timing(overlayOpacity, { toValue: 0, duration: 200, useNativeDriver: true }),
-      ]).start(() => setModalVisible(false));
-    }
-  }, [drawerVisible, modalVisible, slideAnim, overlayOpacity]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -244,11 +214,7 @@ const HomeScreen = ({ navigation }) => {
     fetchData();
   }, []);
 
-  useFocusEffect(useCallback(() => { setActiveDrawerItem('home'); }, []));
-
   const handleMenuPress = (item, label) => {
-    setActiveDrawerItem(item); closeDrawer();
-    
     const labelLower = (label || '').toLowerCase().trim();
     const screenMap = {
       'agenda virtual': 'AgendaVirtual',
@@ -282,15 +248,6 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate('Module', { moduleName: label, moduleId: item });
   };
 
-  const handleLogout = async () => {
-    try {
-      closeDrawer(); setLoading(true);
-      await authRepository.logout();
-      clearSession();
-      navigation.replace('Login');
-    } catch (error) { console.error('Error al cerrar sesión:', error); showSnackbar('Error al cerrar sesión'); setLoading(false); }
-  };
-
   const getModuleIcon = (module) => {
     const iconMap = {
       'deportes': 'basketball', 'inicio': 'home', 'extra escolares': 'star',
@@ -311,8 +268,6 @@ const HomeScreen = ({ navigation }) => {
   const daySchoolFromCalendar = findDaySchool(calendarData, nextSchoolDate);
   const weekdayDia = getWeekdayDiaForSchedule(nextSchoolDate);
 
-  console.log('daySchoolFromCalendar', daySchoolFromCalendar);
-
   let horarioNext = null;
   if (Array.isArray(schedule?.horario) && schedule.horario.length > 0) {
     if (daySchoolFromCalendar != null) {
@@ -325,8 +280,6 @@ const HomeScreen = ({ navigation }) => {
   const diaLabel =
     daySchoolFromCalendar ?? horarioNext?.dia ?? null;
 
-  console.log('diaLabel', diaLabel);
-
   const uniformeNext =
     horarioNext != null
       ? uniformeLabelFromCodigo(horarioNext.codigo_uniforme) ||
@@ -334,9 +287,6 @@ const HomeScreen = ({ navigation }) => {
           ? `Uniforme: ${horarioNext.desc_uniforme}`
           : 'Uniforme: —')
       : 'Uniforme: Sudadera';
-    console.log('uniformeNext', uniformeNext);
-    console.log('horarioNext', horarioNext);
-    console.log('daySchoolFromCalendar', daySchoolFromCalendar);
 
   const showSchoolDayCard =  diaLabel != null;
 
@@ -377,28 +327,20 @@ const HomeScreen = ({ navigation }) => {
 
       {/* Header Section */}
       <View style={styles.header}>
-        <IconButton
-          icon={drawerVisible ? 'close' : 'menu'}
-          size={28}
-          iconColor="#002c5d"
-          onPress={toggleDrawer}
-          style={styles.menuButton}
-        />
-        <TouchableOpacity onPress={openDrawer} style={styles.headerLeft}>
-          <View style={styles.profileContainer}>
-            {userInfo?.FOTO && getImageUri(userInfo.FOTO) ? (
-              <Image source={{ uri: getImageUri(userInfo.FOTO) }} style={styles.headerAvatar} />
-            ) : (
-              <View style={styles.headerAvatarPlaceholder}>
-                <Text style={styles.headerAvatarText}>{userInfo?.NOMBRE ? userInfo.NOMBRE.substring(0, 2).toUpperCase() : 'US'}</Text>
-              </View>
-            )}
-            <View style={styles.headerTextContainer}>
-              <Text style={styles.headerWelcome}>BIENVENIDO</Text>
-              <Text style={styles.headerName}>¡Hola, {toCapitalCase(userInfo?.NOMBRE?.split(' ')[2] || 'Usuario')}!</Text>
+        <View style={styles.profileContainer}>
+          {userInfo?.FOTO && getImageUri(userInfo.FOTO) ? (
+            <Image source={{ uri: getImageUri(userInfo.FOTO) }} style={styles.headerAvatar} />
+          ) : (
+            <View style={styles.headerAvatarPlaceholder}>
+              <Text style={styles.headerAvatarText}>{userInfo?.NOMBRE ? userInfo.NOMBRE.substring(0, 2).toUpperCase() : 'US'}</Text>
             </View>
+          )}
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerName} numberOfLines={2}>{userInfo?.NOMBRE?.replace('\n', ' ') || 'Usuario'}</Text>
+            <Text style={styles.headerRole}>{userInfo?.PERFIL || 'Estudiante'}</Text>
+            {userInfo?.CURSO && <Text style={styles.headerCourse}>{userInfo.CURSO.replace('\n', ' ')}</Text>}
           </View>
-        </TouchableOpacity>
+        </View>
       </View>
 
       {/* Content */}
@@ -553,63 +495,28 @@ const HomeScreen = ({ navigation }) => {
         </Card>
       </ScrollView>
 
-      {/* Navigation Drawer */}
-      <Modal animationType="none" transparent={true} visible={modalVisible} onRequestClose={closeDrawer}>
-        <View style={styles.modalContainer}>
-          <TouchableWithoutFeedback onPress={closeDrawer}>
-            <Animated.View style={[styles.drawerOverlay, { opacity: overlayOpacity }]} />
-          </TouchableWithoutFeedback>
-          <Animated.View style={[styles.drawerContainer, { transform: [{ translateX: slideAnim }] }]}>
-            <View style={styles.profileSection}>
-              <IconButton
-                icon="close"
-                size={24}
-                iconColor="#64748b"
-                onPress={closeDrawer}
-                style={styles.drawerCloseButton}
-              />
-              <View style={styles.profileHeader}>
-                {userInfo?.FOTO && getImageUri(userInfo.FOTO) ? (
-                  <Avatar.Image size={64} source={{ uri: getImageUri(userInfo.FOTO) }} style={styles.avatar} />
-                ) : (
-                  <Avatar.Text size={64} label={userInfo?.NOMBRE ? userInfo.NOMBRE.substring(0, 2).toUpperCase() : 'US'} style={styles.avatar} />
-                )}
-                <View style={styles.profileInfo}>
-                  <Text variant="titleMedium" style={styles.profileName} numberOfLines={2}>{userInfo?.NOMBRE?.replace('\n', ' ') || 'Usuario'}</Text>
-                  <Text variant="bodySmall" style={styles.profileRole}>{userInfo?.PERFIL || 'Estudiante'}</Text>
-                  {userInfo?.CURSO && <Text variant="bodySmall" style={styles.profileCourse}>{userInfo.CURSO.replace('\n', ' ')}</Text>}
+      {/* Carrusel de opciones del menú */}
+      <View style={styles.quickAccessSection}>
+        <Text style={styles.quickAccessTitle}>Módulos</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.quickAccessCarousel}>
+          {mainContent && Array.isArray(mainContent) && mainContent.filter((item) => !inactiveMain.includes(item.id)).map((item, index) => {
+            const itemId = item.id || item.ID || `item-${index}`;
+            return (
+              <TouchableOpacity
+                key={itemId}
+                style={styles.quickAccessItem}
+                onPress={() => handleMenuPress(itemId, item.module)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.quickAccessIconContainer}>
+                  <Icon name={getModuleIcon(item.module)} size={24} color="#002c5d" />
                 </View>
-              </View>
-            </View>
-            <Divider />
-            <ScrollView style={styles.menuScrollView} showsVerticalScrollIndicator={true} bounces={false}>
-              <Drawer.Section style={styles.drawerSection}>
-                <Drawer.Item icon="home" label="Home" active={activeDrawerItem === 'home'} onPress={() => handleMenuPress('home', 'Home')}
-                  style={activeDrawerItem === 'home' ? styles.activeDrawerItem : styles.inactiveDrawerItem}
-                  labelStyle={activeDrawerItem === 'home' ? styles.activeDrawerLabel : styles.inactiveDrawerLabel}
-                  theme={{ colors: { onSurfaceVariant: activeDrawerItem === 'home' ? '#002c5d' : '#94a3b8', onSecondaryContainer: activeDrawerItem === 'home' ? '#002c5d' : '#94a3b8', primary: '#002c5d' } }} />
-                {mainContent && Array.isArray(mainContent) && mainContent.filter((item) => !inactiveMain.includes(item.id)).map((item, index) => {
-                  const itemId = item.id || item.ID || `item-${index}`;
-                  const isActive = activeDrawerItem === itemId;
-                  return (
-                    <Drawer.Item key={itemId} icon={getModuleIcon(item.module)} label={item.module || 'Sin nombre'} active={isActive}
-                      onPress={() => handleMenuPress(itemId, item.module)}
-                      style={isActive ? styles.activeDrawerItem : styles.inactiveDrawerItem}
-                      labelStyle={isActive ? styles.activeDrawerLabel : styles.inactiveDrawerLabel}
-                      theme={{ colors: { onSurfaceVariant: isActive ? '#002c5d' : '#94a3b8', onSecondaryContainer: isActive ? '#002c5d' : '#94a3b8', primary: '#002c5d' } }} />
-                  );
-                })}
-              </Drawer.Section>
-            </ScrollView>
-            <Divider />
-            <View style={styles.logoutSection}>
-              <Drawer.Item icon="logout" label="Cerrar sesión" onPress={handleLogout}
-                style={styles.logoutItem} labelStyle={styles.logoutLabel}
-                theme={{ colors: { onSurfaceVariant: '#dc2626', onSecondaryContainer: '#dc2626', primary: '#dc2626' } }} />
-            </View>
-          </Animated.View>
-        </View>
-      </Modal>
+                <Text style={styles.quickAccessLabel} numberOfLines={2}>{item.module || 'Sin nombre'}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
 
       <Snackbar visible={snackbarVisible} onDismiss={() => setSnackbarVisible(false)} duration={3000}
         action={{ label: 'OK', onPress: () => setSnackbarVisible(false) }}>{snackbarMessage}</Snackbar>
@@ -619,16 +526,15 @@ const HomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   mainContainer: { flex: 1, backgroundColor: '#f8f6f6' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(248, 246, 246, 0.95)', paddingLeft: 8, paddingRight: 24, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(0, 44, 93, 0.1)' },
-  headerLeft: { flex: 1 },
-  menuButton: { margin: 0 },
+  header: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#002c5d', paddingHorizontal: 16, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(0, 44, 93, 0.1)' },
   profileContainer: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  headerAvatar: { width: 48, height: 48, borderRadius: 24, borderWidth: 2, borderColor: 'rgba(0, 44, 93, 0.2)' },
-  headerAvatarPlaceholder: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#002c5d', borderWidth: 2, borderColor: 'rgba(0, 44, 93, 0.2)', alignItems: 'center', justifyContent: 'center' },
+  headerAvatar: { width: 73, height: 73, borderRadius: 36.5, borderWidth: 2, borderColor: 'rgba(0, 44, 93, 0.2)' },
+  headerAvatarPlaceholder: { width: 73, height: 73, borderRadius: 36.5, backgroundColor: '#002c5d', borderWidth: 2, borderColor: 'rgba(0, 44, 93, 0.2)', alignItems: 'center', justifyContent: 'center' },
   headerAvatarText: { color: '#FFFFFF', fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold' },
   headerTextContainer: { marginLeft: 0 },
-  headerWelcome: { fontSize: 12, fontFamily: 'Inter_700Bold', fontWeight: '700', color: '#002c5d', letterSpacing: 1.5, marginBottom: 4 },
-  headerName: { fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold', color: '#221610', lineHeight: 24 },
+  headerName: { fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold', color: '#FFFFFF', marginBottom: 2 },
+  headerRole: { fontSize: 13, fontFamily: 'Inter_400Regular', color: 'rgba(255, 255, 255, 0.8)', marginBottom: 2 },
+  headerCourse: { fontSize: 13, fontFamily: 'Inter_400Regular', color: 'rgba(255, 255, 255, 0.8)' },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8f6f6' },
   loadingText: { marginTop: 16, color: '#002c5d' },
   content: { flex: 1, paddingHorizontal: 16, paddingTop: 24, paddingBottom: 24, backgroundColor: '#f8f6f6' },
@@ -723,26 +629,6 @@ const styles = StyleSheet.create({
   notificationItemTimestamp: { fontSize: 10, fontFamily: 'Inter_400Regular', color: '#94a3b8', marginTop: 4 },
   notificationChevron: { backgroundColor: 'transparent', width: 20, height: 20, alignSelf: 'center' },
   cardText: { color: '#64748b', fontFamily: 'Inter_400Regular', lineHeight: 22, fontSize: 14 },
-  modalContainer: { flex: 1, flexDirection: 'row' },
-  drawerOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)' },
-  drawerContainer: { position: 'absolute', left: 0, top: 0, bottom: 0, width: width * 0.80, maxWidth: 320, backgroundColor: '#f8f6f6', shadowColor: '#000', shadowOffset: { width: 2, height: 0 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 8 },
-  profileSection: { paddingVertical: 24, paddingHorizontal: 16, backgroundColor: '#f8f6f6', position: 'relative' },
-  drawerCloseButton: { position: 'absolute', top: 8, right: 8, margin: 0, zIndex: 10 },
-  profileHeader: { flexDirection: 'row', alignItems: 'center' },
-  avatar: { backgroundColor: '#002c5d', borderWidth: 2, borderColor: 'rgba(0, 44, 93, 0.2)' },
-  profileInfo: { marginLeft: 16, flex: 1 },
-  profileName: { fontFamily: 'Inter_700Bold', fontWeight: 'bold', color: '#221610', marginBottom: 4, fontSize: 16 },
-  profileRole: { fontFamily: 'Inter_400Regular', color: '#64748b', marginBottom: 2, fontSize: 14 },
-  profileCourse: { fontFamily: 'Inter_400Regular', color: '#64748b', fontSize: 14 },
-  menuScrollView: { flex: 1 },
-  drawerSection: { paddingTop: 8, paddingBottom: 8, paddingHorizontal: 8 },
-  activeDrawerItem: { backgroundColor: '#e6ebf1', borderRadius: 12, marginHorizontal: 8, height: 48 },
-  activeDrawerLabel: { color: '#002c5d', fontWeight: '600', fontSize: 16 },
-  inactiveDrawerItem: { borderRadius: 12, marginHorizontal: 8, height: 48, backgroundColor: 'transparent' },
-  inactiveDrawerLabel: { color: '#64748b', fontWeight: '500', fontSize: 16 },
-  logoutSection: { paddingVertical: 8, paddingBottom: 16, backgroundColor: '#f8f6f6', paddingHorizontal: 8 },
-  logoutItem: { borderRadius: 12, height: 56, backgroundColor: 'transparent' },
-  logoutLabel: { color: '#dc2626', fontWeight: '700', fontSize: 16 },
   tomorrowScheduleCard: { marginBottom: 24, backgroundColor: '#FFFFFF', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(0, 44, 93, 0.05)', overflow: 'hidden' },
   tomorrowScheduleHeader: { padding: 16 },
   tomorrowScheduleHeaderContent: { flexDirection: 'row', alignItems: 'center', gap: 12 },
@@ -771,6 +657,12 @@ const styles = StyleSheet.create({
   tomorrowScheduleItemChevron: { margin: 0, marginTop: -8, marginRight: -8 },
   tomorrowScheduleItemDescription: { marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(0, 44, 93, 0.1)' },
   tomorrowItemCollapsed: { maxHeight: 18, overflow: 'hidden' },
+  quickAccessSection: { backgroundColor: '#FFFFFF', borderTopWidth: 1, borderTopColor: 'rgba(0, 44, 93, 0.1)', paddingTop: 12, paddingBottom: 12, paddingLeft: 16 },
+  quickAccessTitle: { fontSize: 14, fontFamily: 'Inter_700Bold', fontWeight: 'bold', color: '#221610', marginBottom: 10 },
+  quickAccessCarousel: { gap: 12, paddingRight: 16 },
+  quickAccessItem: { width: 76, alignItems: 'center' },
+  quickAccessIconContainer: { width: 56, height: 56, borderRadius: 16, backgroundColor: 'rgba(0, 44, 93, 0.1)', alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
+  quickAccessLabel: { fontSize: 11, fontFamily: 'Inter_600SemiBold', fontWeight: '600', color: '#221610', textAlign: 'center', lineHeight: 14 },
 });
 
 export default HomeScreen;

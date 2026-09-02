@@ -13,6 +13,7 @@ import {
   useTheme,
   ActivityIndicator,
   IconButton,
+  FAB,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { container } from '../../../di/container';
@@ -43,7 +44,6 @@ const CircularesScreen = ({ navigation, route }) => {
           .filter(key => key !== 'keys')
           .map(key => data.response[key]);
         setCirculares(circularesArray);
-        console.log('Circulares procesadas:', circularesArray.length);
       } else {
         setCirculares([]);
       }
@@ -149,6 +149,13 @@ const CircularesScreen = ({ navigation, route }) => {
           )}
         </View>
       </ScrollView>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -186,6 +193,7 @@ const styles = StyleSheet.create({
   badgeTextAuthNo: { color: '#ef4444' },
   badgeAuthNone: { backgroundColor: 'rgba(100, 116, 139, 0.1)' },
   badgeTextAuthNone: { color: '#64748b' },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default CircularesScreen;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, StatusBar } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -21,6 +21,13 @@ const ExtraEscolaresScreen = ({ navigation }) => {
           </Text>
         </View>
       </ScrollView>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -33,6 +40,7 @@ const styles = StyleSheet.create({
   iconCircle: { width: 96, height: 96, borderRadius: 48, backgroundColor: 'rgba(0, 44, 93, 0.1)', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
   placeholderTitle: { fontSize: 20, fontWeight: 'bold', color: '#0f172a' },
   placeholderText: { fontSize: 14, color: '#64748b', textAlign: 'center', lineHeight: 22 },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default ExtraEscolaresScreen;

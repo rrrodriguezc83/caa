@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
-import { Text, ActivityIndicator } from 'react-native-paper';
+import { Text, ActivityIndicator, FAB } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
 import { apiClient } from '../../../data/datasources/remote/ApiClient';
@@ -139,6 +139,13 @@ const AtencionPsicologicaScreen = ({ navigation }) => {
           <View style={styles.bottomSpacer} />
         </ScrollView>
       )}
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -251,6 +258,7 @@ const styles = StyleSheet.create({
   emptyText: { fontSize: 14, color: '#64748b', textAlign: 'center' },
 
   bottomSpacer: { height: 24 },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default AtencionPsicologicaScreen;

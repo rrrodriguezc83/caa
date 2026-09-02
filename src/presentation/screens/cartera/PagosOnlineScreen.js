@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
 
@@ -100,6 +100,13 @@ const PagosOnlineScreen = ({ navigation }) => {
           </Text>
         </View>
       </View>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -178,6 +185,7 @@ const styles = StyleSheet.create({
     borderColor: '#bfdbfe',
   },
   infoText: { flex: 1, fontSize: 13, color: '#1a4f8a', lineHeight: 19 },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default PagosOnlineScreen;

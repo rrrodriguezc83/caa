@@ -11,14 +11,11 @@ export class NursingRepositoryImpl extends NursingRepository {
   }
 
   async getReports() {
-    console.log('=== getReportAtt ===');
-
     const data = await this.apiClient.post(API_URLS.ENFERMERIA, {
       base: 'caa',
       param: 'getReportAtt',
     });
 
-    console.log('Reportes de enfermería:', data);
     return data;
   }
 }

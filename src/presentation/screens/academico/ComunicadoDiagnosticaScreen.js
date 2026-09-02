@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
-import { Text, Card, ActivityIndicator, Avatar } from 'react-native-paper';
+import { Text, Card, ActivityIndicator, Avatar, FAB } from 'react-native-paper';
 import RenderHtml from 'react-native-render-html';
 import { container } from '../../../di/container';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -265,6 +265,13 @@ const ComunicadoDiagnosticaScreen = ({ navigation, route }) => {
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
       </View>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -360,6 +367,7 @@ const styles = StyleSheet.create({
   },
   backButtonIcon: { backgroundColor: 'transparent' },
   backButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default ComunicadoDiagnosticaScreen;

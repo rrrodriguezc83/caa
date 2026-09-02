@@ -45,7 +45,6 @@ export const getScheduleForCourse = async (cursoId) => {
   }
 
   const document = { id: snapshot.id, ...snapshot.data() };
-  console.log('Horario encontrado en Firestore:', JSON.stringify(document, null, 2));
   return document;
 };
 

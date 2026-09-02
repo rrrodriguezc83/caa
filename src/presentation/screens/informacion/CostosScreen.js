@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import ScreenHeader from '../../components/common/ScreenHeader';
 import costosData from '../../../data/datasources/local/CostosEducativos.json';
 import serviciosData from '../../../data/datasources/local/CostosServicios.json';
@@ -77,6 +77,13 @@ const CostosScreen = ({ navigation }) => {
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -128,6 +135,7 @@ const styles = StyleSheet.create({
   valueCol: { flex: 1.4, textAlign: 'right' },
 
   bottomSpacer: { height: 24 },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default CostosScreen;

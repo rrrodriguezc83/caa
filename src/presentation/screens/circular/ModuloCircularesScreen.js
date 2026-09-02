@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
 
@@ -60,6 +60,13 @@ const ModuloCircularesScreen = ({ navigation }) => {
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -108,6 +115,7 @@ const styles = StyleSheet.create({
   moduleTitle: { fontSize: 16, fontWeight: '600', color: '#27272a' },
   moduleSubtitle: { fontSize: 12, color: '#71717a', marginTop: 2 },
   bottomSpacer: { height: 24 },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default ModuloCircularesScreen;

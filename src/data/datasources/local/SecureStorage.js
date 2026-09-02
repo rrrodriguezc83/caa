@@ -18,7 +18,6 @@ export class SecureStorage {
         timestamp: new Date().toISOString(),
       });
       await SecureStore.setItemAsync(CREDENTIALS_KEY, credentials);
-      console.log('Credenciales guardadas exitosamente');
       return true;
     } catch (error) {
       console.error('Error guardando credenciales:', error);
@@ -58,7 +57,6 @@ export class SecureStorage {
   async deleteCredentials() {
     try {
       await SecureStore.deleteItemAsync(CREDENTIALS_KEY);
-      console.log('Credenciales eliminadas exitosamente');
       return true;
     } catch (error) {
       console.error('Error eliminando credenciales:', error);

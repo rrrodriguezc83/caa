@@ -11,22 +11,15 @@ export class UserRepositoryImpl extends UserRepository {
   }
 
   async getInfo() {
-    console.log('=== getInfo ===');
-
     const data = await this.apiClient.post(API_URLS.MAIN, {
       base: 'caa',
       param: 'getInfo',
     });
 
-    console.log('=== Respuesta getInfo ===');
-    console.log('Status code:', data.code);
-
     return data;
   }
 
   async getMain() {
-    console.log('=== getMain ===');
-
     const data = await this.apiClient.post(API_URLS.MAIN, {
       base: 'r',
       param: 'getMain',

@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
 import PdfViewer from '../../components/common/PdfViewer';
@@ -124,6 +124,13 @@ const BoletinAcademicoScreen = ({ navigation }) => {
           <PdfViewer key={selectedPeriod.value} base64={pdfBase64} />
         )}
       </View>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -158,6 +165,7 @@ const styles = StyleSheet.create({
   hintText: { fontSize: 14, color: '#94a3b8', textAlign: 'center' },
   loadingText: { color: '#64748b', fontSize: 14 },
   errorText: { fontSize: 14, color: '#64748b', textAlign: 'center' },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default BoletinAcademicoScreen;

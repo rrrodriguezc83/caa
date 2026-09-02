@@ -16,6 +16,7 @@ import {
   ActivityIndicator,
   Avatar,
   IconButton,
+  FAB,
 } from 'react-native-paper';
 import RenderHtml from 'react-native-render-html';
 import { container } from '../../../di/container';
@@ -56,10 +57,7 @@ const DetalleCircularScreen = ({ navigation, route }) => {
 
   const sendConsult = async () => {
     try {
-      const data = await circularRepository.sendConsult(circular.circular);
-      if (data.code === 200 && Array.isArray(data.response) && data.response[0] === true) {
-        console.log('Consulta de circular registrada exitosamente');
-      }
+      await circularRepository.sendConsult(circular.circular);
     } catch (error) {
       console.error('Error al registrar consulta de circular:', error);
     }
@@ -291,6 +289,13 @@ const DetalleCircularScreen = ({ navigation, route }) => {
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
       </View>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -336,6 +341,7 @@ const styles = StyleSheet.create({
   backButtonFixed: { backgroundColor: '#002c5d', borderRadius: 12, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 },
   backButtonIcon: { backgroundColor: 'transparent' },
   backButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default DetalleCircularScreen;

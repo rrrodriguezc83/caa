@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, StatusBar } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -26,6 +26,13 @@ const ModuleScreen = ({ route, navigation }) => {
           )}
         </View>
       </ScrollView>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -39,6 +46,7 @@ const styles = StyleSheet.create({
   placeholderTitle: { fontSize: 20, fontWeight: 'bold', color: '#0f172a' },
   placeholderText: { fontSize: 14, color: '#64748b', textAlign: 'center', lineHeight: 22 },
   moduleId: { fontSize: 12, color: '#94a3b8', fontStyle: 'italic', marginTop: 4 },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default ModuleScreen;

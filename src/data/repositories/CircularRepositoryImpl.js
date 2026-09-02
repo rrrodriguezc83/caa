@@ -11,15 +11,12 @@ export class CircularRepositoryImpl extends CircularRepository {
   }
 
   async getNotices() {
-    console.log('=== getNotices ===');
-
     const data = await this.apiClient.post(API_URLS.NOTICES, {
       base: 'comunidad',
       param: 'getNotices',
       surveys: 'false',
     });
 
-    console.log('Circulares recibidas:', data);
     return data;
   }
 
@@ -33,9 +30,6 @@ export class CircularRepositoryImpl extends CircularRepository {
   }
 
   async getNoticeContent(circularNumber) {
-    console.log('=== getNoticeContent ===');
-    console.log('  - circular:', circularNumber);
-
     // Codificar el número de circular en base64
     const noticeBase64 = typeof btoa !== 'undefined'
       ? btoa(circularNumber)
@@ -47,21 +41,16 @@ export class CircularRepositoryImpl extends CircularRepository {
       notice: noticeBase64,
     });
 
-    console.log('Contenido de circular recibido:', data);
     return data;
   }
 
   async sendConsult(circularNumber) {
-    console.log('=== sendConsult ===');
-    console.log('  - num_notice:', circularNumber);
-
     const data = await this.apiClient.post(API_URLS.NOTICES, {
       base: 'comunidad',
       param: 'sendConsult',
       num_notice: circularNumber,
     });
 
-    console.log('Respuesta sendConsult:', data);
     return data;
   }
 

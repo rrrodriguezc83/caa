@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import AppScreenLayout from '../../components/common/AppScreenLayout';
 import { useFocusEffect } from '@react-navigation/native';
-import { Text, ActivityIndicator } from 'react-native-paper';
+import { Text, ActivityIndicator, FAB } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { container } from '../../../di/container';
 import ScreenHeader from '../../components/common/ScreenHeader';
@@ -161,6 +161,13 @@ const EvaluacionesDiagnosticasScreen = ({ navigation }) => {
           )}
         </View>
       </ScrollView>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -225,6 +232,7 @@ const styles = StyleSheet.create({
   badgeTextConsultationDone: { color: '#10b981' },
   badgeConsultationPending: { backgroundColor: 'rgba(245, 158, 11, 0.1)' },
   badgeTextConsultationPending: { color: '#f59e0b' },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default EvaluacionesDiagnosticasScreen;

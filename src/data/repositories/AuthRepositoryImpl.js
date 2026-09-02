@@ -15,10 +15,6 @@ export class AuthRepositoryImpl extends AuthRepository {
     const encodedUser = encodeBase64(username);
     const encodedPass = encodeBase64(password);
 
-    console.log('=== Login ===');
-    console.log('  - user (original):', username);
-    console.log('  - type_session:', typeSession, `(${typeSession === '1' ? 'Comunidad' : 'Estudiante'})`);
-
     const data = await this.apiClient.post(API_URLS.MAIN, {
       base: 'comunidad',
       param: 'login',
@@ -27,16 +23,11 @@ export class AuthRepositoryImpl extends AuthRepository {
       type_session: typeSession,
     });
 
-    console.log('=== Respuesta login ===');
-    console.log('Response:', JSON.stringify(data, null, 2));
-
     return data;
   }
 
   async logout() {
     const falseBase64 = encodeBase64('false');
-
-    console.log('Cerrando sesión...');
 
     const data = await this.apiClient.post(API_URLS.MAIN, {
       base: 'comunidad',
@@ -45,8 +36,6 @@ export class AuthRepositoryImpl extends AuthRepository {
       pass: falseBase64,
       type_session: 'false',
     });
-
-    console.log('Respuesta de logout:', data);
 
     // Limpiar sesión después de logout
     this.apiClient.clearSession();

@@ -13,6 +13,7 @@ import {
   useTheme,
   ActivityIndicator,
   Avatar,
+  FAB,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { container } from '../../../di/container';
@@ -113,10 +114,8 @@ const EnfermeriaScreen = ({ navigation }) => {
       const data = await nursingRepository.getReports();
 
       if (data.code === 200 && data.response) {
-        console.log('Reportes de enfermería cargados:', data.response.length);
         setReportes(data.response);
       } else {
-        console.log('No se recibieron reportes');
         setReportes([]);
       }
     } catch (error) {
@@ -203,6 +202,13 @@ const EnfermeriaScreen = ({ navigation }) => {
           </View>
         )}
       </ScrollView>
+
+      <FAB
+        icon="arrow-left"
+        style={styles.fab}
+        color="#FFFFFF"
+        onPress={() => navigation.goBack()}
+      />
     </AppScreenLayout>
   );
 };
@@ -444,6 +450,7 @@ const styles = StyleSheet.create({
     color: '#64748b',
     textAlign: 'center',
   },
+  fab: { position: 'absolute', left: 16, bottom: 16, backgroundColor: '#002c5d' },
 });
 
 export default EnfermeriaScreen;
